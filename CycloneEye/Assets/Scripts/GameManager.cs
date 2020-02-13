@@ -6,14 +6,17 @@ public class GameManager : MonoBehaviour
 {
     public static bool gameStarted;
     public static int playerCount = 2;
-    int eliminatedPlayerCount = 0;
     public List<PlayerController> players;
+    public List<PlayerController> eliminationOrder;
 
+    public static GameManager Instance;
     // Start is called before the first frame update
     void Start()
     {
-        EventManager.onPlayerEliminated.AddListener(PlayerEliminated);
+        Instance = this;
         gameStarted = false;
+
+        eliminationOrder = new List<PlayerController>();
         StartCoroutine(ReadyStartAnim());
     }
 
@@ -24,15 +27,22 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ReadyStartAnim()
     {
+        print("READY ?");
         yield return new WaitForSeconds(3);
+        print("GO !");
         gameStarted = true;
-
     }
 
-    void PlayerEliminated()
+    public void RemovePlayer(PlayerController player)
     {
-        eliminatedPlayerCount++;
-        if (eliminatedPlayerCount == playerCount - 1)
-            print("VICTORY");
+        eliminationOrder.Add(player);
+        player.gameObject.SetActive(false);
+        EventManager.onPlayerEliminated.Invoke();
+
+        if (eliminationOrder.Count == playerCount - 1)
+        {
+            print("GAME! -> \"Go to Score Scene\" animation");
+        }
     }
+
 }
