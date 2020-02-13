@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
+    [SerializeField] float shakeStrength = 0.1f;
+
     void Start()
     {
         EventManager.onPlayerDamaged.AddListener(Chake);
@@ -20,17 +22,17 @@ public class CameraManager : MonoBehaviour
         for(int i = 0; i < 10; i++)
         {
             Vector3 startPos = transform.position;
-            Vector3 target = new Vector3(Random.Range(-1f, 1f), originPos.y, Random.Range(-1f, 1f));
-            for(float t = 0; t < 0.05f; t += Time.deltaTime)
+            Vector3 target = new Vector3(Random.Range(-1f, 1f) * shakeStrength, originPos.y, Random.Range(-1f, 1f) * shakeStrength);
+            for(float t = 0; t < 0.01f; t += Time.deltaTime)
             {
-                transform.position = Vector3.Lerp(startPos, target, t * 20);
+                transform.position = Vector3.Lerp(startPos, target, t * 100);
                 yield return null;
             }
         }
         Vector3 startPos2 = transform.position;
-        for (float t = 0; t < 0.05f; t += Time.deltaTime)
+        for (float t = 0; t < 0.01f; t += Time.deltaTime)
         {
-            transform.position = Vector3.Lerp(startPos2, originPos, t * 20);
+            transform.position = Vector3.Lerp(startPos2, originPos, t * 100);
             yield return null;
         }
     }

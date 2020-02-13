@@ -520,6 +520,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28caa95c638d2f94e8fd52937840bee0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shakeStrength: 0.1
 --- !u!1001 &1477557461
 PrefabInstance:
   m_ObjectHideFlags: 0
