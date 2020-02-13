@@ -30,7 +30,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!GameManager.gameStarted || state != PlayerState.NORMAL) return;
+        if (Input.GetButtonDown("Start " + index))
+            GameManager.Instance.Pause(index);
+
+        if (GameManager.State != GameState.PLAYING || state != PlayerState.NORMAL) return;
 
         Vector3 movement = new Vector3(Input.GetAxis("Horizontal " + index), 0, Input.GetAxis("Vertical " + index)) * moveSpeed;
         if (charging) movement /= 3;

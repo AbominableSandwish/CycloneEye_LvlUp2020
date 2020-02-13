@@ -47,7 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
-  damages: 0
   moveSpeed: 10
   attackAnim: {fileID: 5133071675062285817, guid: 23ca2b9d61666264c9df803277ab43b0,
     type: 3}
