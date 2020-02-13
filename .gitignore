@@ -58,3 +58,11 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+
+CycloneEye/Library/
+
+CycloneEye/Packages/
+
+CycloneEye/Temp/
+
+CycloneEye/Logs/
