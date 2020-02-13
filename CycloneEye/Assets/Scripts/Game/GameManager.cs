@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     int isPaused;
     GameState state;
     public static GameState State { get { return Instance.state; } }
+    public static int PauseIndex { get { return Instance.isPaused; } }
 
     // Start is called before the first frame update
     void Start()
@@ -42,10 +43,9 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ReadyStartAnim()
     {
-        print("READY ?");
-        yield return new WaitForSeconds(3);
-        print("GO !");
+        yield return new WaitForSeconds(2.0f);
         state = GameState.PLAYING;
+        yield return new WaitForSeconds(0.5f);
         startScreen.SetActive(false);
     }
 
@@ -58,10 +58,17 @@ public class GameManager : MonoBehaviour
         if (eliminationOrder.Count == playerCount - 1)
         {
             state = GameState.END;
-            print("GAME! -> \"Go to Score Scene\" animation");
-            endScreen.SetActive(true);
-            blackPanel.Show();
+            StartCoroutine(EndAnim());
         }
+    }
+
+    IEnumerator EndAnim()
+    {
+        print("GAME! -> \"Go to Score Scene\" animation");
+        endScreen.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        yield return blackPanel.ShowAnim();
+        print("CHANGE SCENE");
     }
 
     public void Pause(int playerIdx)
