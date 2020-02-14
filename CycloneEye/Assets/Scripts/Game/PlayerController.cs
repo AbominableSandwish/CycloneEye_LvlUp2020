@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject attackAnim;
     [SerializeField] private GameObject Trace;
     [SerializeField] float damage = 15;
+    [SerializeField] float dashForce = 1000;
 
     private Text scoreText;
     private Text damageText;
@@ -151,7 +152,25 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
+    IEnumerator ChargeAnim(Vector3 direction, float force, float stopDist)
+    {
+        RaycastHit hit;
+        Vector3 EndPoint;
+        if (Physics.SphereCast(transform.position, 0.3f, direction, out hit, force))
+        {
+            EndPoint = hit.point - direction * stopDist;
+        } else
+        {
+            EndPoint = transform.position + direction * force;
+        }
+        Vector3 startPos = transform.position;
+        for(float t = 0; t <= 0.1f; t += Time.deltaTime)
+        {
+            transform.position = Vector3.Lerp(startPos, EndPoint, t * 10);
+            yield return null;
+        }
+        transform.position = EndPoint;
+    }
 
     IEnumerator AttackAnim()
     {
@@ -161,8 +180,7 @@ public class PlayerController : MonoBehaviour
         {
             yield return new WaitForSeconds(.12f - chargingAttack);
         }
-        rBody.AddForce(transform.forward * 3000 * chargingAttack);
-        rBody.velocity = Vector3.zero;
+        StartCoroutine(ChargeAnim(transform.forward,dashForce * chargingAttack, 0.3f));
         Instantiate(attackAnim, transform.position + transform.forward * 0.2f + transform.right * 0.1f, transform.rotation);
         yield return new WaitForSeconds(.1f);
         rBody.velocity = Vector3.zero;
@@ -180,7 +198,7 @@ public class PlayerController : MonoBehaviour
             if (coll.tag == "Player" && coll.gameObject != this.gameObject)
             {
                 Vector3 direction = (coll.transform.position - transform.position).normalized;
-                blocked = blocked || coll.GetComponent<PlayerController>().Push(direction, 1+chargingAttack*20, index);
+                blocked = blocked || coll.GetComponent<PlayerController>().Push(direction, chargingAttack*damage, index);
             }
         }
         charging = false;
@@ -195,7 +213,7 @@ public class PlayerController : MonoBehaviour
         bool guarded = false;
         if (state == PlayerState.GUARDING)
         {
-            if (Vector3.Angle(-transform.forward, baseForce) < 45f)
+            if (Vector3.Angle(-transform.forward, baseForce) < 50f)
             {
                 // IF GUARDED
                 guarded = true;
@@ -236,10 +254,11 @@ public class PlayerController : MonoBehaviour
         if (!guarded)
         {
             damages += power;
-            Vector3 force = baseForce * Mathf.Pow(damages * damage, 1.1f);
-            // if (force.magnitude > 5000)
-            //     force = force.normalized * 5000;
-            rBody.AddForce(force);
+            //Vector3 force = baseForce * Mathf.Pow(damages, 1.1f);
+            // if (force.magnitude > 3000)
+            //     force = force.normalized * 3000;
+            //rBody.AddForce(force);
+            StartCoroutine(ChargeAnim(baseForce, damages / 30, 0f));
         }
         damageText.text = ((int) damages).ToString("000");
         damageAnimator.SetTrigger("TakeDamage");
