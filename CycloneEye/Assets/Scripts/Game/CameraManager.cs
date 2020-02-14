@@ -15,6 +15,7 @@ public class CameraManager : MonoBehaviour
     {
         centerStage = transform.position - Vector3.up*10;
         EventManager.onPlayerDamaged.AddListener(Chake);
+        EventManager.onWallDestroyed.AddListener(Chake);
 
         this.players = new List<Transform>();
 

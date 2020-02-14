@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     public static float startTime = 240;
     static int roundCount = 1;
 
+    public static int[] playerOrder = new int[4];
+
     [SerializeField] List<PlayerController> players;
     [SerializeField] List<GameObject> playerDamages;
     [SerializeField] BlackPanel blackPanel;
@@ -42,11 +44,14 @@ public class GameManager : MonoBehaviour
         TimeRound = startTime;
         if (roundCount == 1)
             ScoreManager.InitScores();
+        playerCount = 0;
         for (int i = 0; i < players.Count; i++)
         {
-            players[i].eliminated = !(i < playerCount);
-            players[i].gameObject.SetActive(i < playerCount);
-            playerDamages[i].gameObject.SetActive(i < playerCount);
+            players[i].eliminated = playerOrder[i] == -1;
+            players[i].gameObject.SetActive(!players[i].eliminated);
+            playerDamages[i].gameObject.SetActive(!players[i].eliminated);
+            if(!players[i].eliminated)
+                playerCount++;
         }
         blackPanel.Hide();
         state = GameState.INITIALIZE;

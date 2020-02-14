@@ -8,7 +8,6 @@ public class MenuManager : MonoBehaviour
 {
     [SerializeField] BlackPanel blackPanel;
 
-    [SerializeField] Slider numberPlayerSlider;
     [SerializeField] Slider numberTurnSlider;
     [SerializeField] Slider timerSlider;
 
@@ -19,7 +18,6 @@ public class MenuManager : MonoBehaviour
     {
         blackPanel.Hide();
         initializing = true;
-        numberPlayerSlider.value = GameManager.playerCount;
         numberTurnSlider.value = GameManager.maxRund;
         timerSlider.value = GameManager.startTime/30;
         initializing = false;
@@ -57,7 +55,6 @@ public class MenuManager : MonoBehaviour
     {
         if (initializing) return;
 
-        GameManager.playerCount = (int)numberPlayerSlider.value;
         GameManager.maxRund = (int)numberTurnSlider.value;
         GameManager.startTime = 30 * timerSlider.value;
 
