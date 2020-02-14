@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     bool charging = false;
 
     public PlayerState State { get { return state; } }
+    public float Damages { get { return damages; } }
+
     public void StopPush()
     {
         rBody.velocity = Vector3.zero;
