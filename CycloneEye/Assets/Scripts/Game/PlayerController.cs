@@ -181,8 +181,8 @@ public class PlayerController : MonoBehaviour
         EventManager.onPlayerDamaged.Invoke();
         damages += power;
         Vector3 force = baseForce * Mathf.Pow(damages * 10, 1.1f);
-        if (force.magnitude > 5000)
-            force = force.normalized * 5000;
+       // if (force.magnitude > 5000)
+       //     force = force.normalized * 5000;
         rBody.AddForce(force);
         damageText.text = ((int) damages).ToString("000");
         damageAnimator.SetTrigger("TakeDamage");

@@ -713,6 +713,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: 0
   winnerIcon: {fileID: 7972691780338698693}
+  goldHammer: {fileID: 0}
   panels:
   - {fileID: 4140478574766921262}
   - {fileID: 4140478576015773775}
@@ -1142,7 +1143,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7972691780338698693}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
