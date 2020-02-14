@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int index;
     [SerializeField] float moveSpeed;
     [SerializeField] GameObject attackAnim;
+    [SerializeField] private GameObject Trace;
 
     private Text scoreText;
     private Animator scoreAnimator;
@@ -45,14 +46,36 @@ public class PlayerController : MonoBehaviour
         scoreAnimator = scoreText.gameObject.GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    float NextimeToSpawnTrace = 0.0f;
+
+    void FixedUpdate()
     {
         if (state == PlayerState.KO)
         {
             Fall();
+            if (NextimeToSpawnTrace <= Time.time)
+            {
+                NextimeToSpawnTrace = Time.deltaTime + 0.0f;
+
+                Instantiate(Trace, transform.position, transform.localRotation, GameObject.Find("Stage").transform);
+            }
             return;
         }
+
+        if (state == PlayerState.PUSHED)
+        {
+            if (NextimeToSpawnTrace <= Time.time)
+            {
+                NextimeToSpawnTrace = Time.deltaTime + 0.01f;
+
+                Instantiate(Trace, transform.position, transform.localRotation, GameObject.Find("Stage").transform);
+            }
+        }
+    }
+    // Update is called once per frame
+    void Update()
+    {
+       
 
         if (Input.GetButtonDown("Start " + index))
             GameManager.Instance.Pause(index);
