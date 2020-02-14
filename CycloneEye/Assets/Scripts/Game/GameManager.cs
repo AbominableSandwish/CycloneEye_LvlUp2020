@@ -12,8 +12,9 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public static int playerCount = 3;
-    public static int maxRund = 1;
+    public static int playerCount = 2;
+    public static int maxRund = 3;
+    public static float startTime = 240;
     static int roundCount = 1;
 
     [SerializeField] List<PlayerController> players;
@@ -30,16 +31,18 @@ public class GameManager : MonoBehaviour
     public static int PauseIndex { get { return Instance.isPaused; } }
     public static int Round { get { return roundCount; } }
 
-    private float TimeRound = 60 * 4;
+    private float TimeRound = startTime;
     private Text timerText;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        TimeRound = startTime;
         if (roundCount == 1)
             ScoreManager.InitScores();
         for (int i = 0; i < players.Count; i++)
         {
+            players[i].eliminated = !(i < playerCount);
             players[i].gameObject.SetActive(i < playerCount);
             playerDamages[i].gameObject.SetActive(i < playerCount);
         }
@@ -87,7 +90,7 @@ public class GameManager : MonoBehaviour
         eliminationOrder.Add(player);
         player.eliminated = true;
         //player.gameObject.SetActive(false);
-        EventManager.onPlayerEliminated.Invoke();
+        //EventManager.onPlayerEliminated.Invoke();
 
         if (eliminationOrder.Count == playerCount - 1)
         {
@@ -173,7 +176,7 @@ public class GameManager : MonoBehaviour
             }
            //endScreen.SetActive(true);
            // state = GameState.END;
-            RemovePlayer(other.gameObject.GetComponent<PlayerController>());
+            RemovePlayer(player);
         }
     }
     public static void Quit()
