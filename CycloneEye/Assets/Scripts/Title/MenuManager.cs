@@ -23,15 +23,18 @@ public class MenuManager : MonoBehaviour
 
     int settingsIndex = 0;
 
+    private MotherFuckingAudioManager audioManager;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
         blackPanel.Hide();
         initializing = true;
         numberTurnSlider.value = GameManager.maxRund;
         timerSlider.value = GameManager.startTime/30;
         initializing = false;
+        audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.MENU);
 
     }
 
@@ -77,14 +80,13 @@ public class MenuManager : MonoBehaviour
             }
             else if(Input.GetButtonDown("Cancel"))
             {
+                audioManager.PlayAlert(MotherFuckingAudioManager.AlertList.BTN_VALIDATION);
                 settingsPanel.gameObject.SetActive(false);
-            }
-            else if (Input.GetAxisRaw("Vertical") == 0)
-            {
-                timer = 0;
             }
             else
             {
+                if (Input.GetAxisRaw("Vertical") == 0)
+                    timer = 0;
                 switch (settingsIndex)
                 {
                     case 0:
@@ -123,7 +125,7 @@ public class MenuManager : MonoBehaviour
     void TryChangeSliderValue(Slider s)
     {
         timerH -= Time.deltaTime;
-        if (Input.GetAxisRaw("Horizontal") < 0 && s.value > 0 && timerH <= 0)
+        if (Input.GetAxisRaw("Horizontal") < 0 && s.value > s.minValue && timerH <= 0)
         {
             timerH = 0.5f;
             s.value--;
@@ -156,7 +158,18 @@ public class MenuManager : MonoBehaviour
 
     public void Play()
     {
-        StartCoroutine(ChangeSceneAnim());
+        audioManager.PlayAlert(MotherFuckingAudioManager.AlertList.BTN_VALIDATION);
+        audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.MAIN, true);
+        int counter = 0;
+        for (int j = 0; j < 4; j++)
+        {
+            if (GameManager.playerOrder[j] != -1)
+            {
+                counter++;
+            }
+        }
+        if(counter > 1)
+            StartCoroutine(ChangeSceneAnim());
     }
 
     IEnumerator ChangeSceneAnim()

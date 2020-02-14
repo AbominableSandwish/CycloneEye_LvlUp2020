@@ -73,7 +73,7 @@ public class PrepareGame : MonoBehaviour
         notEnoughtPlayer.SetActive(counter < 2);
         pressStartToPlay.SetActive(counter > 1);
 
-        if(counter > 0 && Input.GetButtonDown("Start"))
+        if(Input.GetButtonDown("Start"))
         {
             menuManager.Play();
         }

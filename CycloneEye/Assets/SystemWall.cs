@@ -23,7 +23,6 @@ public class SystemWall : MonoBehaviour
             PlayerController controller = other.gameObject.GetComponent<PlayerController>();
             if (controller.State == PlayerState.PUSHED)
             {
-                print("BOUM");
                 GetComponent<Animator>().SetTrigger("Destroy");
                 EventManager.onWallDestroyed.Invoke();
             }

@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public static int playerCount = 2;
     public static int maxRund = 3;
-    public static float startTime = 240;
+    public static float startTime = 180;
     static int roundCount = 1;
 
     public static int[] playerOrder = new int[4] { 0,1,2,3 };
@@ -36,6 +36,8 @@ public class GameManager : MonoBehaviour
 
     private float TimeRound = startTime;
     private Text timerText;
+
+    private MotherFuckingAudioManager audioManager;
 
     // Start is called before the first frame update
     void Awake()
@@ -65,6 +67,8 @@ public class GameManager : MonoBehaviour
         int sec = (int)(TimeRound - (min * 60));
         timerText.text = "0"+ min + ":" + sec + "0";
         camera = Camera.main.GetComponent<CameraManager>();
+        audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
+        //audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.MAIN, true);
     }
 
     // Update is called once per frame
@@ -173,6 +177,7 @@ public class GameManager : MonoBehaviour
             other.gameObject.GetComponentInChildren<SpriteRenderer>().sortingOrder = -50;
             other.gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
             player.State = PlayerState.KO;
+            audioManager.PlaySound(MotherFuckingAudioManager.SoundList.PLAYER_FALL);
             if (player.pusher == -1)
             {
                 ScoreManager.eliminations[player.Index-1]--;
