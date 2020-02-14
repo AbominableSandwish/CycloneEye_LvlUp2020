@@ -143,8 +143,6 @@ public class PlayerController : MonoBehaviour
             }
             if (Input.GetButtonUp("Attack " + controllerId) && charging)
             {
-                charging = false;
-                anim.SetBool("charging", false);
                 StartCoroutine(AttackAnim());
             }
         }
@@ -154,11 +152,14 @@ public class PlayerController : MonoBehaviour
     IEnumerator AttackAnim()
     {
         Instantiate(attackAnim, transform.position + transform.forward*0.2f + transform.right*0.1f, transform.rotation);
+        
+        if(chargingAttack < 0.12f)
+        {
+            yield return new WaitForSeconds(.12f - chargingAttack);
+        }
+        yield return new WaitForSeconds(.1f);
         state = PlayerState.ATTACKING;
         rBody.velocity = Vector3.zero;
-        if(chargingAttack < 0.12f)
-        yield return new WaitForSeconds(.12f - chargingAttack);
-        yield return new WaitForSeconds(.1f);
         TestAttackPropultion();
         yield return new WaitForSeconds(.7f);
         state = PlayerState.NORMAL;
@@ -167,19 +168,23 @@ public class PlayerController : MonoBehaviour
     void TestAttackPropultion()
     {
         Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.25f + transform.right * 0.1f, new Vector3(.6f, .6f, .6f));
+        bool blocked = false;
         //Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.2f + transform.right * 0.1f, new Vector3(.5f, .5f, .5f));
         foreach (Collider coll in colls)
         {
             if (coll.tag == "Player" && coll.gameObject != this.gameObject)
             {
                 Vector3 direction = (coll.transform.position - transform.position).normalized;
-                coll.GetComponent<PlayerController>().Push(direction, 1+chargingAttack*20, index);
+                blocked = blocked || coll.GetComponent<PlayerController>().Push(direction, 1+chargingAttack*20, index);
             }
         }
+        charging = false;
+        anim.SetBool("charging", false);
+        anim.SetBool("attack_blocked", blocked);
     }
 
     public int pusher = -1;
-    public void Push(Vector3 baseForce, float power, int pusherIndex)
+    public bool Push(Vector3 baseForce, float power, int pusherIndex)
     {
         pusher = pusherIndex;
         bool guarded = false;
@@ -234,6 +239,7 @@ public class PlayerController : MonoBehaviour
         }
         damageText.text = ((int) damages).ToString("000");
         damageAnimator.SetTrigger("TakeDamage");
+        return guarded;
     }
 
     IEnumerator GuardAnim()

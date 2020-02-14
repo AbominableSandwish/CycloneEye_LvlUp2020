@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     public static float startTime = 240;
     static int roundCount = 1;
 
-    public static int[] playerOrder = new int[4];
+    public static int[] playerOrder = new int[4] { 0,1,2,3 };
 
     [SerializeField] List<PlayerController> players;
     [SerializeField] List<GameObject> playerDamages;
