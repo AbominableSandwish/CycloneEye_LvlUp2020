@@ -65,9 +65,8 @@ public class PlayerController : MonoBehaviour
             Fall();
             if (NextimeToSpawnTrace <= Time.time)
             {
-                NextimeToSpawnTrace = Time.deltaTime + 0.0f;
-
-                Instantiate(Trace, transform.position, transform.localRotation, GameObject.Find("Stage").transform);
+                NextimeToSpawnTrace = Time.deltaTime + 0.01f;
+                GameObject newTrace = Instantiate(Trace, transform.position, transform.localRotation, GameObject.Find("Stage").transform);
             }
             return;
         }
@@ -78,7 +77,7 @@ public class PlayerController : MonoBehaviour
             {
                 NextimeToSpawnTrace = Time.deltaTime + 0.01f;
 
-                Instantiate(Trace, transform.position, transform.localRotation, GameObject.Find("Stage").transform);
+                GameObject newTrace = Instantiate(Trace, transform.position, transform.localRotation, GameObject.Find("Stage").transform);
             }
         }
     }
