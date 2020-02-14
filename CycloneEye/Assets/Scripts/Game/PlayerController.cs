@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour
             if (coll.tag == "Player" && coll.gameObject != this.gameObject)
             {
                 Vector3 direction = (coll.transform.position - transform.position).normalized;
-                coll.GetComponent<PlayerController>().Push(direction, 1+chargingAttack);
+                coll.GetComponent<PlayerController>().Push(direction, 1+chargingAttack*20);
             }
         }
     }
@@ -131,8 +131,8 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("charging", false);
         charging = false;
         EventManager.onPlayerDamaged.Invoke();
-        damages += 100 * power;
-        rBody.AddForce(baseForce * damages);
+        damages += power;
+        rBody.AddForce(baseForce * Mathf.Pow(damages *10, 1.1f));
         StartCoroutine(PushAnim());
         scoreText.text = ((int) damages).ToString();
         scoreAnimator.SetTrigger("TakeDamage");
