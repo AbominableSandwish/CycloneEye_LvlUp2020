@@ -13,8 +13,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public static int playerCount = 2;
+    public static int maxRund = 1;
+    static int roundCount = 1;
 
     [SerializeField] List<PlayerController> players;
+    [SerializeField] List<GameObject> playerDamages;
     [SerializeField] BlackPanel blackPanel;
     [SerializeField] GameObject startScreen;
     [SerializeField] GameObject endScreen;
@@ -25,6 +28,7 @@ public class GameManager : MonoBehaviour
     GameState state;
     public static GameState State { get { return Instance.state; } }
     public static int PauseIndex { get { return Instance.isPaused; } }
+    public static int Round { get { return roundCount; } }
 
     private float TimeRound = 60 * 4;
     private Text timerText;
@@ -32,6 +36,13 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (roundCount == 1)
+            ScoreManager.InitScores();
+        for (int i = 0; i < players.Count; i++)
+        {
+            players[i].gameObject.SetActive(i < playerCount);
+            playerDamages[i].gameObject.SetActive(i < playerCount);
+        }
         blackPanel.Hide();
         state = GameState.INITIALIZE;
         startScreen.SetActive(true);
@@ -68,17 +79,38 @@ public class GameManager : MonoBehaviour
 
         if (eliminationOrder.Count == playerCount - 1)
         {
-            state = GameState.END;
             StartCoroutine(EndAnim());
         }
     }
 
+    public static void EndTime()
+    {
+        Instance.StartCoroutine(Instance.EndAnim());
+    }
+
     IEnumerator EndAnim()
     {
+        state = GameState.END;
         endScreen.SetActive(true);
         yield return new WaitForSeconds(1f);
         yield return blackPanel.ShowAnim();
-        SceneManager.LoadScene("SceneScore");
+
+        for(int i = 0; i < 4; i++)
+        {
+            if (players[i].gameObject.activeSelf)
+                ScoreManager.roundWinners[i]++;
+        }
+
+        if (roundCount == maxRund)
+        {
+            roundCount = 1;
+            SceneManager.LoadScene("SceneScore");
+        }
+        else
+        {
+            roundCount++;
+            SceneManager.LoadScene("Issa");
+        }
     }
 
     public void Pause(int playerIdx)
@@ -107,6 +139,7 @@ public class GameManager : MonoBehaviour
     }
     IEnumerator QuitGame()
     {
+        roundCount = 1;
         state = GameState.END;
         yield return new WaitForSeconds(1f);
         yield return blackPanel.ShowAnim();

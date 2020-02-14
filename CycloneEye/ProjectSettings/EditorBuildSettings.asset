@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SceneScore.unity
     guid: b3130c0445fee524a9e4ba689bd9f9df
+  - enabled: 1
+    path: Assets/Scenes/Issa.unity
+    guid: 38a17b3f6c4b55643a5d8da69a10f277
   m_configObjects: {}

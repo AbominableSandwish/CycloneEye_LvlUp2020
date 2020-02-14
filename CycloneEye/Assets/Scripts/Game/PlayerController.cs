@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetButton("Attack " + index) && charging)
         {
-            chargingAttack = Mathf.Min(1f, chargingAttack+=Time.deltaTime);
+            chargingAttack = Mathf.Min(1f, chargingAttack+Time.deltaTime);
         }
         if (Input.GetButtonUp("Attack " + index) && charging)
         {
@@ -97,10 +97,11 @@ public class PlayerController : MonoBehaviour
         Instantiate(attackAnim, transform.position + transform.forward*0.2f + transform.right*0.1f, transform.rotation);
         state = PlayerState.ATTACKING;
         rBody.velocity = Vector3.zero;
-        if(chargingAttack < 0.333f)
-        yield return new WaitForSeconds(.333f- chargingAttack);
+        if(chargingAttack < 0.24f)
+        yield return new WaitForSeconds(.24f - chargingAttack);
+        yield return new WaitForSeconds(.1f);
         TestAttackPropultion();
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.6f);
         state = PlayerState.NORMAL;
     }
 
@@ -119,17 +120,35 @@ public class PlayerController : MonoBehaviour
 
     public void Push(Vector3 baseForce, float power)
     {
-        transform.LookAt(transform.position - baseForce);
-        anim.SetTrigger("pushed");
+        if (state == PlayerState.ATTACKING)
+        {
+            float factor = (power / (1 + chargingAttack * 20))/2;
+
+            baseForce = factor*baseForce / 3;
+            power *= factor;
+            print("collide");
+            StartCoroutine(ClashAnim());
+        }
+        else
+        {
+            transform.LookAt(transform.position - baseForce);
+            anim.SetTrigger("pushed");
+            StartCoroutine(PushAnim());
+        }
         anim.SetBool("walking", false);
         anim.SetBool("charging", false);
         charging = false;
         EventManager.onPlayerDamaged.Invoke();
         damages += power;
         rBody.AddForce(baseForce * Mathf.Pow(damages *10, 1.1f));
-        StartCoroutine(PushAnim());
         scoreText.text = ((int) damages).ToString();
         scoreAnimator.SetTrigger("TakeDamage");
+    }
+
+    IEnumerator ClashAnim()
+    {
+        yield return new WaitForSeconds(0.6f);
+        state = PlayerState.NORMAL;
     }
 
     IEnumerator PushAnim()
