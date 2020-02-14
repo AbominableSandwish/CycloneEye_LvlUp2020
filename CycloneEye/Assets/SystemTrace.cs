@@ -20,6 +20,8 @@ public class SystemTrace : MonoBehaviour
 
     private SpriteRenderer renderer;
 
+    public SpriteRenderer source;
+
     public void Start()
     {
         renderer = GetComponent<SpriteRenderer>();
@@ -43,6 +45,7 @@ public class SystemTrace : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        renderer.sprite = source.sprite;
         renderer.color = renderer.color - new Color(0.0f, 0.0f, 0.0f, Time.deltaTime*2);
         if(renderer.color.a <= 0.0f)
             Destroy(this.gameObject);

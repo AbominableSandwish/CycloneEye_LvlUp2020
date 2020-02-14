@@ -66,18 +66,20 @@ public class PlayerController : MonoBehaviour
             if (NextimeToSpawnTrace <= Time.time)
             {
                 NextimeToSpawnTrace = Time.deltaTime + 0.01f;
-                GameObject newTrace = Instantiate(Trace, transform.position, transform.localRotation, GameObject.Find("Stage").transform);
+                GameObject newTrace = Instantiate(Trace, transform.position, transform.GetComponentInChildren<SpriteRenderer>().transform.rotation, GameObject.Find("Stage").transform);
+                newTrace.GetComponent<SystemTrace>().source = transform.GetComponentInChildren<SpriteRenderer>();
             }
             return;
         }
 
-        if (state == PlayerState.PUSHED)
+        if (state == PlayerState.PUSHED || state == PlayerState.ATTACKING)
         {
             if (NextimeToSpawnTrace <= Time.time)
             {
                 NextimeToSpawnTrace = Time.deltaTime + 0.01f;
 
-                GameObject newTrace = Instantiate(Trace, transform.position, transform.localRotation, GameObject.Find("Stage").transform);
+                GameObject newTrace = Instantiate(Trace, transform.position, transform.GetComponentInChildren<SpriteRenderer>().transform.rotation, GameObject.Find("Stage").transform);
+                newTrace.GetComponent<SystemTrace>().source = transform.GetComponentInChildren<SpriteRenderer>();
             }
         }
     }
@@ -150,14 +152,16 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator AttackAnim()
     {
-        Instantiate(attackAnim, transform.position + transform.forward*0.2f + transform.right*0.1f, transform.rotation);
-        
-        if(chargingAttack < 0.12f)
+
+        state = PlayerState.ATTACKING;
+        if (chargingAttack < 0.12f)
         {
             yield return new WaitForSeconds(.12f - chargingAttack);
         }
+        rBody.AddForce(transform.forward * 3000 * chargingAttack);
+        rBody.velocity = Vector3.zero;
+        Instantiate(attackAnim, transform.position + transform.forward * 0.2f + transform.right * 0.1f, transform.rotation);
         yield return new WaitForSeconds(.1f);
-        state = PlayerState.ATTACKING;
         rBody.velocity = Vector3.zero;
         TestAttackPropultion();
         yield return new WaitForSeconds(.7f);
@@ -166,9 +170,8 @@ public class PlayerController : MonoBehaviour
 
     void TestAttackPropultion()
     {
-        Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.25f + transform.right * 0.1f, new Vector3(.6f, .6f, .6f));
+        Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.2f + transform.right * 0.1f, new Vector3(.5f, .5f, .5f));
         bool blocked = false;
-        //Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.2f + transform.right * 0.1f, new Vector3(.5f, .5f, .5f));
         foreach (Collider coll in colls)
         {
             if (coll.tag == "Player" && coll.gameObject != this.gameObject)
@@ -189,7 +192,6 @@ public class PlayerController : MonoBehaviour
         bool guarded = false;
         if (state == PlayerState.GUARDING)
         {
-            print(Vector3.Angle(-transform.forward, baseForce));
             if (Vector3.Angle(-transform.forward, baseForce) < 45f)
             {
                 // IF GUARDED
