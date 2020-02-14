@@ -79,12 +79,10 @@ public class MenuManager : MonoBehaviour
             {
                 settingsPanel.gameObject.SetActive(false);
             }
-            else if (Input.GetAxisRaw("Vertical") == 0)
-            {
-                timer = 0;
-            }
             else
             {
+                if (Input.GetAxisRaw("Vertical") == 0)
+                    timer = 0;
                 switch (settingsIndex)
                 {
                     case 0:
@@ -123,7 +121,7 @@ public class MenuManager : MonoBehaviour
     void TryChangeSliderValue(Slider s)
     {
         timerH -= Time.deltaTime;
-        if (Input.GetAxisRaw("Horizontal") < 0 && s.value > 0 && timerH <= 0)
+        if (Input.GetAxisRaw("Horizontal") < 0 && s.value > s.minValue && timerH <= 0)
         {
             timerH = 0.5f;
             s.value--;
@@ -156,7 +154,16 @@ public class MenuManager : MonoBehaviour
 
     public void Play()
     {
-        StartCoroutine(ChangeSceneAnim());
+        int counter = 0;
+        for (int j = 0; j < 4; j++)
+        {
+            if (GameManager.playerOrder[j] != -1)
+            {
+                counter++;
+            }
+        }
+        if(counter > 1)
+            StartCoroutine(ChangeSceneAnim());
     }
 
     IEnumerator ChangeSceneAnim()
