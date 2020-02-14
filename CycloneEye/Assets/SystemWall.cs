@@ -16,7 +16,7 @@ public class SystemWall : MonoBehaviour
         
     }
 
-     private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
