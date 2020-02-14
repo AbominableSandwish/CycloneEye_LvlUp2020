@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum GameState
 {
@@ -24,21 +25,30 @@ public class GameManager : MonoBehaviour
     public static GameState State { get { return Instance.state; } }
     public static int PauseIndex { get { return Instance.isPaused; } }
 
+    private float TimeRound = 60 * 4;
+    private Text timerText;
+
     // Start is called before the first frame update
     void Start()
     {
-        blackPanel.Hide();
+        //blackPanel.Hide();
         state = GameState.INITIALIZE;
-        startScreen.SetActive(true);
+        //startScreen.SetActive(true);
         Instance = this;
         isPaused = -1;
         eliminationOrder = new List<PlayerController>();
         StartCoroutine(ReadyStartAnim());
+        timerText = GameObject.Find("TextTimer").GetComponent<Text>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        //TIMER
+        TimeRound -= Time.deltaTime;
+        int min = (int)(TimeRound / 60.0f);
+        int sec = (int)(TimeRound - (min * 60));
+        timerText.text = min + ":" + sec;
     }
 
     IEnumerator ReadyStartAnim()

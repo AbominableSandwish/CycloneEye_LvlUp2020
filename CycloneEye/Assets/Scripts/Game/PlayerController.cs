@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum PlayerState
 {
@@ -12,6 +13,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int index;
     [SerializeField] float moveSpeed;
     [SerializeField] GameObject attackAnim;
+
+    private Text scoreText;
+    private Animator scoreAnimator;
 
     Animator anim;
 
@@ -36,6 +40,8 @@ public class PlayerController : MonoBehaviour
         state = PlayerState.NORMAL;
         anim = GetComponentInChildren<Animator>();
         rBody = GetComponent<Rigidbody>();
+        scoreText = GameObject.Find("TextScore" + index).GetComponent<Text>();
+        scoreAnimator = scoreText.gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -109,6 +115,8 @@ public class PlayerController : MonoBehaviour
         damages += 1000 * power;
         rBody.AddForce(baseForce * damages);
         StartCoroutine(PushAnim());
+        scoreText.text = ((int) damages).ToString();
+        scoreAnimator.SetTrigger("TakeDamage");
     }
 
     IEnumerator PushAnim()
