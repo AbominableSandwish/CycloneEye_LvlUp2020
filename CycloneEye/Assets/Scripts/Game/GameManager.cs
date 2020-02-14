@@ -11,6 +11,7 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
+    private CameraManager camera;
     public static GameManager Instance;
     public static int playerCount = 2;
     public static int maxRund = 3;
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        
         TimeRound = startTime;
         if (roundCount == 1)
             ScoreManager.InitScores();
@@ -57,6 +59,7 @@ public class GameManager : MonoBehaviour
         int min = (int)(TimeRound / 60.0f);
         int sec = (int)(TimeRound - (min * 60));
         timerText.text = "0"+ min + ":" + sec + "0";
+        camera = Camera.main.GetComponent<CameraManager>();
     }
 
     // Update is called once per frame
@@ -89,6 +92,7 @@ public class GameManager : MonoBehaviour
     {
         eliminationOrder.Add(player);
         player.eliminated = true;
+        camera.RemovePlayer(player);
         //player.gameObject.SetActive(false);
         //EventManager.onPlayerEliminated.Invoke();
 
