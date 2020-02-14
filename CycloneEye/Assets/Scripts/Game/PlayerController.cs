@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PlayerState
+{
+    NORMAL, ATTACKING, PUSHED, KO
+}
+
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] int index;
     [SerializeField] float moveSpeed;
     [SerializeField] GameObject attackAnim;
 
-    public enum PlayerState
-    {
-        NORMAL, ATTACKING, PUSHED, KO
-    }
+    Animator anim;
+
 
     float damages;
     Rigidbody rBody;
@@ -19,18 +22,29 @@ public class PlayerController : MonoBehaviour
     float chargingAttack;
     bool charging = false;
 
+    public PlayerState State { get { return state; } }
+    public void StopPush()
+    {
+        rBody.velocity = Vector3.zero;
+        state = PlayerState.NORMAL;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         charging = false;
         state = PlayerState.NORMAL;
+        anim = GetComponentInChildren<Animator>();
         rBody = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!GameManager.gameStarted || state != PlayerState.NORMAL) return;
+        if (Input.GetButtonDown("Start " + index))
+            GameManager.Instance.Pause(index);
+
+        if (GameManager.State != GameState.PLAYING || state != PlayerState.NORMAL) return;
 
         Vector3 movement = new Vector3(Input.GetAxis("Horizontal " + index), 0, Input.GetAxis("Vertical " + index)) * moveSpeed;
         if (charging) movement /= 3;
@@ -38,9 +52,13 @@ public class PlayerController : MonoBehaviour
         if (rBody.velocity.magnitude > moveSpeed)
             rBody.velocity = rBody.velocity.normalized * moveSpeed;
 
-        if (movement.magnitude > 0.1f)
+        if (movement.magnitude > 0)
         {
+            anim.SetBool("walking", true);
             transform.LookAt(transform.position+movement);
+        }
+        else { 
+            anim.SetBool("walking", false);
         }
 
         if (Input.GetButtonDown("Attack " + index))
@@ -85,6 +103,7 @@ public class PlayerController : MonoBehaviour
 
     public void Push(Vector3 baseForce, float power)
     {
+        anim.SetBool("walking", false);
         charging = false;
         EventManager.onPlayerDamaged.Invoke();
         damages += 1000 * power;
