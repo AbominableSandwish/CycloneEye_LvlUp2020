@@ -21,10 +21,11 @@ public class SystemWall : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             PlayerController controller = other.gameObject.GetComponent<PlayerController>();
-            //if (controller == PlayerController.PlayerState.PUSHED)
-            //{
-
-            //}
+            if (controller.State == PlayerState.PUSHED)
+            {
+                print("BOUM");
+                GetComponent<Animator>().SetTrigger("Destroy");
+            }
         }
     }
 
