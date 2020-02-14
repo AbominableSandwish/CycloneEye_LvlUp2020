@@ -35,7 +35,8 @@ public class CameraManager : MonoBehaviour
     {
         Vector3 average = PositionStageAverage();
         Debug.Log(average.magnitude);
-        transform.position = centerStage + Vector3.up * PlayerMagnitude(average) + Vector3.right * average.x + Vector3.forward * average.z; //+Vector3.down * PlayerMagnitude()
+        Vector3 target = centerStage + Vector3.up * PlayerMagnitude(average) + Vector3.right * average.x + Vector3.forward * average.z; //+Vector3.down * PlayerMagnitude()
+        transform.position = LerpSmoothing(target);
     }
 
     float PlayerMagnitude(Vector3 center)
@@ -115,9 +116,9 @@ public class CameraManager : MonoBehaviour
         nbrPlayer--;
     }
 
-    Vector3 LerpSmoothing()
+    Vector3 LerpSmoothing(Vector3 targetPosition)
     {
-        return new Vector3();
+        return Vector3.Lerp(transform.position, targetPosition, 10.0f * Time.deltaTime);
     }
 
     void Chake()

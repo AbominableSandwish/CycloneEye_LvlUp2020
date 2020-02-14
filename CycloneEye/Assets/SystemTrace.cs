@@ -4,16 +4,40 @@ using UnityEngine;
 
 public class SystemTrace : MonoBehaviour
 {
-    private SpriteRenderer renderer;
-
-    public void SetTrace(Sprite sprite)
+    public enum ColorPlayer
     {
-        this.renderer.sprite = sprite;
+        GREEN,
+        BLUE,
+        RED,
+        MAGENTA
     }
+
+    [SerializeField] ColorPlayer color;
+    [SerializeField] Sprite green;
+    [SerializeField] Sprite blue;
+    [SerializeField] Sprite red;
+    [SerializeField] Sprite magenta;
+
+    private SpriteRenderer renderer;
 
     public void Start()
     {
         renderer = GetComponent<SpriteRenderer>();
+        switch (color)
+        {
+            case ColorPlayer.GREEN:
+                renderer.sprite = green;
+                break;
+            case ColorPlayer.BLUE:
+                renderer.sprite = blue;
+                break;
+            case ColorPlayer.RED:
+                renderer.sprite = red;
+                break;
+            case ColorPlayer.MAGENTA:
+                renderer.sprite = magenta;
+                break;
+        }
     }
 
     // Update is called once per frame
