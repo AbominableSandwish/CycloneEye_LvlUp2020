@@ -13,7 +13,7 @@ public class CameraManager : MonoBehaviour
 
     void Start()
     {
-        centerStage = transform.position - Vector3.up*10;
+        centerStage = transform.position - Vector3.up*4;
         EventManager.onPlayerDamaged.AddListener(Chake);
         EventManager.onWallDestroyed.AddListener(Chake);
 
@@ -33,21 +33,81 @@ public class CameraManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        transform.position = centerStage + Vector3.down * PositionAveraging().magnitude + Vector3.right * PositionAveraging().x + Vector3.forward * PositionAveraging().y;
-        transform.position += Vector3.up * 10;
+        Vector3 average = PositionStageAverage();
+        Debug.Log(average.magnitude);
+        Vector3 target = centerStage + Vector3.up * PlayerMagnitude(average) + Vector3.right * average.x + Vector3.forward * average.z; //+Vector3.down * PlayerMagnitude()
+        transform.position = LerpSmoothing(target);
     }
 
-    Vector3 PositionAveraging()
+    float PlayerMagnitude(Vector3 center)
+    {
+        float average = 0.0f;  
+        foreach (var player in this.players)
+        {
+                float result = (center - player.position).magnitude;
+            if (result < 0)
+            {
+                result *= -1;
+            }
+
+            average += result;
+        }
+
+        average /= players.Count;
+        
+
+        return average;
+    }
+
+    Vector3 PlayerAverage()
     {
         Vector3 average = Vector3.zero;
         foreach (var player in this.players)
         {
-            average += player.localPosition;
+            average += player.position;
         }
 
         average /= this.players.Count;
-         
+
         return average;
+    }
+
+    public Vector3 PositionStageAverage()
+    {
+    int i = 0;
+    Vector3[] lerpPosition;
+    lerpPosition = new Vector3[players.Count];
+
+
+    foreach (var player in this.players)
+    {
+        lerpPosition[i] = Vector3.Lerp(centerStage, player.position, 0.5f);
+        i++;
+    }
+
+        Vector3 positionAverage= Vector3.zero;
+        if (lerpPosition.Length == 2)
+        {
+            positionAverage = Vector3.Lerp(lerpPosition[0], lerpPosition[1], 0.5f);
+        }
+        if (lerpPosition.Length == 3)
+        {
+            Vector3[] lerpPosition2 = new Vector3[2];
+            lerpPosition2[0] = Vector3.Lerp(lerpPosition[0], lerpPosition[1], 0.5f);
+            lerpPosition2[1] = Vector3.Lerp(lerpPosition[1], lerpPosition[2], 0.5f);
+            positionAverage = Vector3.Lerp(lerpPosition2[0], lerpPosition2[1], 0.5f);
+        }
+        if (lerpPosition.Length == 4)
+        {
+            Vector3[] lerpPosition2 = new Vector3[2];
+
+            lerpPosition2[0] = Vector3.Lerp(lerpPosition[0], lerpPosition[2], 0.5f);
+            lerpPosition2[1] = Vector3.Lerp(lerpPosition[1], lerpPosition[3], 0.5f);
+
+            positionAverage = Vector3.Lerp(lerpPosition2[0], lerpPosition2[1], 0.5f);
+        }
+
+        return positionAverage;
     }
 
     public void RemovePlayer(PlayerController player)
@@ -56,9 +116,9 @@ public class CameraManager : MonoBehaviour
         nbrPlayer--;
     }
 
-    Vector3 LerpSmoothing()
+    Vector3 LerpSmoothing(Vector3 targetPosition)
     {
-        return new Vector3();
+        return Vector3.Lerp(transform.position, targetPosition, 10.0f * Time.deltaTime);
     }
 
     void Chake()
@@ -96,9 +156,7 @@ public class CameraManager : MonoBehaviour
         {
             int i = 0;
             Vector3[] lerpPosition;
-            if (players.Count == 2)
-            {
-                lerpPosition = new Vector3[2];
+                lerpPosition = new Vector3[players.Count];
 
 
                 foreach (var player in this.players)
@@ -113,11 +171,54 @@ public class CameraManager : MonoBehaviour
                     i++;
                 }
 
+            if (lerpPosition.Length == 2)
+            {
                 Gizmos.color = Color.white;
-                Gizmos.DrawLine(lerpPosition[1], lerpPosition[0]);
+                Gizmos.DrawLine(lerpPosition[0], lerpPosition[1]);
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawSphere(Vector3.Lerp(lerpPosition[0], lerpPosition[1], 0.5f),0.15f);
+            }
+            if (lerpPosition.Length == 3)
+            {
+                Vector3[] lerpPosition2 = new Vector3[2];
+
+                Gizmos.color = Color.white;
+                Gizmos.DrawLine(lerpPosition[0], lerpPosition[1]);
                 Gizmos.color = Color.red;
-                Gizmos.DrawSphere(Vector3.Lerp(lerpPosition[1], lerpPosition[0], 0.5f), 0.15f);
+                lerpPosition2[0] = Vector3.Lerp(lerpPosition[0], lerpPosition[1], 0.5f);
+                Gizmos.DrawSphere(lerpPosition2[0], 0.15f);
+                Gizmos.color = Color.white;
+                Gizmos.DrawLine(lerpPosition[1], lerpPosition[2]);
+                Gizmos.color = Color.red;
+                lerpPosition2[1] = Vector3.Lerp(lerpPosition[1], lerpPosition[2], 0.5f);
+                Gizmos.DrawSphere(lerpPosition2[1], 0.15f);
+
+                Gizmos.color = Color.white;
+                Gizmos.DrawLine(lerpPosition2[0], lerpPosition2[1]);
+                Gizmos.color = Color.magenta;
+                Vector3 center= Vector3.Lerp(lerpPosition2[0], lerpPosition2[1], 0.5f);
+                Gizmos.DrawSphere(center, 0.15f);
+            }
+            if (lerpPosition.Length == 4)
+            {
+                Vector3[] lerpPosition2 = new Vector3[2];
+
+                Gizmos.color = Color.white;
+                Gizmos.DrawLine(lerpPosition[0], lerpPosition[2]);
+                Gizmos.color = Color.red;
+                lerpPosition2[0] = Vector3.Lerp(lerpPosition[0], lerpPosition[2], 0.5f);
+                Gizmos.DrawSphere(lerpPosition2[0], 0.15f);
+                Gizmos.color = Color.white;
+                Gizmos.DrawLine(lerpPosition[1], lerpPosition[3]);
+                Gizmos.color = Color.red;
+                lerpPosition2[1] = Vector3.Lerp(lerpPosition[1], lerpPosition[3], 0.5f);
+                Gizmos.DrawSphere(lerpPosition2[1], 0.15f);
+                Gizmos.color = Color.white;
+                Gizmos.DrawLine(lerpPosition2[0], lerpPosition2[1]);
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawSphere(Vector3.Lerp(lerpPosition2[0], lerpPosition2[1], 0.5f), 0.15f);
             }
         }
+              
+        }
     }
-}

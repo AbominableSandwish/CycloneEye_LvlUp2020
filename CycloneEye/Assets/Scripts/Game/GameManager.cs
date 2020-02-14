@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     public static float startTime = 240;
     static int roundCount = 1;
 
-    public static int[] playerOrder = new int[4];
+    public static int[] playerOrder = new int[4] { 0,1,2,3 };
 
     [SerializeField] List<PlayerController> players;
     [SerializeField] List<GameObject> playerDamages;
@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
 
             }
             endScreen.SetActive(true);
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(2f);
             yield return blackPanel.ShowAnim();
 
             if (roundCount == maxRund)
