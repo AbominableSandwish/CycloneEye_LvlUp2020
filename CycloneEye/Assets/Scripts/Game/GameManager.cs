@@ -31,9 +31,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //blackPanel.Hide();
+        blackPanel.Hide();
         state = GameState.INITIALIZE;
-        //startScreen.SetActive(true);
+        startScreen.SetActive(true);
         Instance = this;
         isPaused = -1;
         eliminationOrder = new List<PlayerController>();
