@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
     public float Damages { get { return damages; } }
     public int Index { get { return index; } }
 
+    private MotherFuckingAudioManager audioManager;
+
     public void StopPush()
     {
         rBody.velocity = Vector3.zero;
@@ -45,6 +47,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
         charging = false;
         state = PlayerState.NORMAL;
         anim = GetComponentInChildren<Animator>();

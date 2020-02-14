@@ -23,15 +23,18 @@ public class MenuManager : MonoBehaviour
 
     int settingsIndex = 0;
 
+    private MotherFuckingAudioManager audioManager;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
         blackPanel.Hide();
         initializing = true;
         numberTurnSlider.value = GameManager.maxRund;
         timerSlider.value = GameManager.startTime/30;
         initializing = false;
+        audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.MENU);
 
     }
 
@@ -77,6 +80,7 @@ public class MenuManager : MonoBehaviour
             }
             else if(Input.GetButtonDown("Cancel"))
             {
+                audioManager.PlayAlert(MotherFuckingAudioManager.AlertList.BTN_VALIDATION);
                 settingsPanel.gameObject.SetActive(false);
             }
             else if (Input.GetAxisRaw("Vertical") == 0)
@@ -156,6 +160,8 @@ public class MenuManager : MonoBehaviour
 
     public void Play()
     {
+        audioManager.PlayAlert(MotherFuckingAudioManager.AlertList.BTN_VALIDATION);
+        audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.MAIN, true);
         StartCoroutine(ChangeSceneAnim());
     }
 

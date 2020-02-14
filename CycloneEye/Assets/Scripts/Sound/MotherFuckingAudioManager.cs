@@ -21,56 +21,13 @@ public class MotherFuckingAudioManager : MonoBehaviour
 
     public enum SoundList
     {
-     
+        PLAYER_FALL
     }
 
     public enum AlertList
     {
-        CLICK
+        BTN_VALIDATION
     }
-
-    //public void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.Alpha0))
-    //    {
-    //        PlayAlert(AlertList.CLICK);
-    //    }
-
-    //    if (Input.GetKeyDown(KeyCode.Alpha1))
-    //    {
-    //        PlaySound(SoundList.SNOW);
-    //    }
-
-    //    if (Input.GetKeyDown(KeyCode.Alpha2))
-    //    {
-    //        PlaySound(SoundList.ROCK);
-    //    }
-
-    //    if (Input.GetKeyDown(KeyCode.Alpha3))
-    //    {
-    //        PlaySound(SoundList.TORNADO);
-    //    }
-
-    //    if (Input.GetKeyDown(KeyCode.Alpha4))
-    //    {
-    //        PlaySound(SoundList.UPGRADE);
-    //    }
-
-    //    if (Input.GetKeyDown(KeyCode.Alpha5))
-    //    {
-    //        PlaySound(SoundList.REACTION_HAPPY);
-    //    }
-
-    //    if (Input.GetKeyDown(KeyCode.Alpha6))
-    //    {
-    //        PlaySound(SoundList.REACTION_SAD);
-    //    }
-
-    //    if (Input.GetKeyDown(KeyCode.Alpha7))
-    //    {
-    //        PlaySound(SoundList.COINS);
-    //    }
-    //}
 
     MusicList currentMusicPlaying = MusicList.NONE;
     [Header("Emmiters")]
@@ -83,9 +40,9 @@ public class MotherFuckingAudioManager : MonoBehaviour
     [SerializeField] private AudioClip menuMusic;
     [SerializeField] private AudioClip gameOver;
     [Header("Sound")]
-    [Header("Example")]
-    [SerializeField] private AudioClip[] reactionHappy;
-    [SerializeField] private AudioClip[] reactionSad;
+    [SerializeField] private AudioClip playeFall;
+    [Header("Alert")]
+    [SerializeField] private AudioClip ButtonValidation;
 
     private void Awake()
     {
@@ -127,10 +84,10 @@ public class MotherFuckingAudioManager : MonoBehaviour
 
             switch (alert)
             {
-                //case AlertList.CLICK:
-                //    emitterAvailable.clip = click;
-                //    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.alert;
-                //    break;
+                case AlertList.BTN_VALIDATION:
+                    emitterAvailable.clip = ButtonValidation;
+                    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.alert;
+                    break;
             }
 
             emitterAvailable.Play();
@@ -160,10 +117,10 @@ public class MotherFuckingAudioManager : MonoBehaviour
             
             switch (sound)
             {
-                //case SoundList.REACTION_SAD:
-                //    emitterAvailable.clip = reactionSad[Random.Range(0, reactionSad.Length)];
-                //    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.sound;
-                //    break;
+                case SoundList.PLAYER_FALL:
+                    emitterAvailable.clip = playeFall;
+                    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.sound;
+                    break;
             }
 
             emitterAvailable.Play();
