@@ -21,11 +21,6 @@ public class AudioConfig : MonoBehaviour
     [SerializeField] private Slider SoundSlider;
     [SerializeField] private Slider AlertSlider;
 
-    [SerializeField] private Text TxtMain;
-    [SerializeField] private Text TxtMusic;
-    [SerializeField] private Text TxtSound;
-    [SerializeField] private Text TxtAlert;
-
     [Header("Audio")]
     [SerializeField] private AudioMixer MixerAudio;
 
@@ -59,17 +54,15 @@ public class AudioConfig : MonoBehaviour
 
     public void SetVolume()
     {
-        if (MainSlider.value != mainVolume)
-        {
-            mainVolume = (int)MainSlider.value;
-            TxtMain.text = mainVolume.ToString();
-            MixerAudio.SetFloat("Master", LinearToDecibel(mainVolume/100));
-        }
+        //if (MainSlider.value != mainVolume)
+        //{
+        //    mainVolume = (int)MainSlider.value;
+        //    MixerAudio.SetFloat("Master", LinearToDecibel(mainVolume/100));
+        //}
 
         if (MusicSlider.value != musicVolume)
         {
             musicVolume = (int)MusicSlider.value;
-            TxtMusic.text = musicVolume.ToString();
             MixerAudio.SetFloat("Music", LinearToDecibel(musicVolume / 100));
            
         }
@@ -77,14 +70,12 @@ public class AudioConfig : MonoBehaviour
         if (SoundSlider.value != soundVolume)
         {
             soundVolume = (int)SoundSlider.value;
-            TxtSound.text = soundVolume.ToString();
             MixerAudio.SetFloat("Sound", LinearToDecibel(soundVolume / 100));
         }
 
         if (AlertSlider.value != alertVolume)
         {
             alertVolume = (int)AlertSlider.value;
-            TxtAlert.text = alertVolume.ToString();
             MixerAudio.SetFloat("Alert", LinearToDecibel(alertVolume / 100));
         }
     }
