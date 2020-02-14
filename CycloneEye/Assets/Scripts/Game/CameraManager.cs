@@ -13,7 +13,7 @@ public class CameraManager : MonoBehaviour
 
     void Start()
     {
-        centerStage = transform.position - Vector3.up*4;
+        centerStage = transform.position - Vector3.up;
         EventManager.onPlayerDamaged.AddListener(Chake);
         EventManager.onWallDestroyed.AddListener(Chake);
 
@@ -34,8 +34,11 @@ public class CameraManager : MonoBehaviour
     void FixedUpdate()
     {
         Vector3 average = PositionStageAverage();
-        Debug.Log(average.magnitude);
-        Vector3 target = centerStage + Vector3.up * PlayerMagnitude(average) + Vector3.right * average.x + Vector3.forward * average.z; //+Vector3.down * PlayerMagnitude()
+        float multiplier = 1.0f;
+        Vector3 distanceCamera = Vector3.up * (PlayerMagnitude(average)/1.5f);
+
+           
+        Vector3 target = centerStage/2 + distanceCamera + Vector3.right * average.x + Vector3.forward * average.z; //+Vector3.down * PlayerMagnitude()
         transform.position = LerpSmoothing(target);
     }
 
@@ -118,7 +121,7 @@ public class CameraManager : MonoBehaviour
 
     Vector3 LerpSmoothing(Vector3 targetPosition)
     {
-        return Vector3.Lerp(transform.position, targetPosition, 10.0f * Time.deltaTime);
+        return Vector3.Lerp(transform.position, targetPosition, 5.0f * Time.deltaTime);
     }
 
     void Chake()
