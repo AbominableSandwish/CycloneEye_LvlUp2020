@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public enum PlayerState
 {
-    NORMAL, ATTACKING, PUSHED, KO, GUARDING
+    NORMAL, ATTACKING, PUSHED, KO, GUARDING, LOCK
 }
 
 public class PlayerController : MonoBehaviour
@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float moveSpeed;
     [SerializeField] GameObject attackAnim;
     [SerializeField] private GameObject Trace;
+    [SerializeField] float damage = 15;
 
     private Text scoreText;
     private Text damageText;
@@ -83,7 +84,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         int controllerId = GameManager.playerOrder[index - 1];
 
         if (Input.GetButtonDown("Start " + controllerId))
@@ -142,8 +142,6 @@ public class PlayerController : MonoBehaviour
             }
             if (Input.GetButtonUp("Attack " + controllerId) && charging)
             {
-                charging = false;
-                anim.SetBool("charging", false);
                 StartCoroutine(AttackAnim());
             }
         }
@@ -153,11 +151,14 @@ public class PlayerController : MonoBehaviour
     IEnumerator AttackAnim()
     {
         Instantiate(attackAnim, transform.position + transform.forward*0.2f + transform.right*0.1f, transform.rotation);
+        
+        if(chargingAttack < 0.12f)
+        {
+            yield return new WaitForSeconds(.12f - chargingAttack);
+        }
+        yield return new WaitForSeconds(.1f);
         state = PlayerState.ATTACKING;
         rBody.velocity = Vector3.zero;
-        if(chargingAttack < 0.12f)
-        yield return new WaitForSeconds(.12f - chargingAttack);
-        yield return new WaitForSeconds(.1f);
         TestAttackPropultion();
         yield return new WaitForSeconds(.7f);
         state = PlayerState.NORMAL;
@@ -166,19 +167,23 @@ public class PlayerController : MonoBehaviour
     void TestAttackPropultion()
     {
         Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.25f + transform.right * 0.1f, new Vector3(.6f, .6f, .6f));
+        bool blocked = false;
         //Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.2f + transform.right * 0.1f, new Vector3(.5f, .5f, .5f));
         foreach (Collider coll in colls)
         {
             if (coll.tag == "Player" && coll.gameObject != this.gameObject)
             {
                 Vector3 direction = (coll.transform.position - transform.position).normalized;
-                coll.GetComponent<PlayerController>().Push(direction, 1+chargingAttack*20, index);
+                blocked = blocked || coll.GetComponent<PlayerController>().Push(direction, 1+chargingAttack*20, index);
             }
         }
+        charging = false;
+        anim.SetBool("charging", false);
+        anim.SetBool("attack_blocked", blocked);
     }
 
     public int pusher = -1;
-    public void Push(Vector3 baseForce, float power, int pusherIndex)
+    public bool Push(Vector3 baseForce, float power, int pusherIndex)
     {
         pusher = pusherIndex;
         bool guarded = false;
@@ -192,6 +197,7 @@ public class PlayerController : MonoBehaviour
                 baseForce = baseForce / 5;
                 power *= .2f;
                 anim.SetTrigger("guard_hit");
+                StartCoroutine(GuardAnim());
             }
             else
             {
@@ -210,7 +216,6 @@ public class PlayerController : MonoBehaviour
 
             baseForce = factor*baseForce / 3;
             power *= factor;
-            print("collide");
             StartCoroutine(ClashAnim());
         }
         else
@@ -226,22 +231,36 @@ public class PlayerController : MonoBehaviour
         if (!guarded)
         {
             damages += power;
-            Vector3 force = baseForce * Mathf.Pow(damages * 10, 1.1f);
+            Vector3 force = baseForce * Mathf.Pow(damages * damage, 1.1f);
             // if (force.magnitude > 5000)
             //     force = force.normalized * 5000;
             rBody.AddForce(force);
         }
         damageText.text = ((int) damages).ToString("000");
         damageAnimator.SetTrigger("TakeDamage");
+        return guarded;
     }
 
     IEnumerator GuardAnim()
     {
-        yield return new WaitForSeconds(0.4f);
+        state = PlayerState.LOCK;
+        yield return new WaitForSeconds(0.3f);
         if (state != PlayerState.KO)
         {
             pusher = -1;
-            state = PlayerState.NORMAL;
+
+            if (Input.GetButton("Guard " + GameManager.playerOrder[index - 1]))
+            {
+                anim.SetBool("guarding", true);
+                guarding = true;
+                state = PlayerState.GUARDING;
+            }
+            else
+            {
+                anim.SetBool("guarding", false);
+                guarding = false;
+                state = PlayerState.NORMAL;
+            }
         }
     }
     IEnumerator ClashAnim()
