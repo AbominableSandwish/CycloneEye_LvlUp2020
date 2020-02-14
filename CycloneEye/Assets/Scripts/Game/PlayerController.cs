@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
     public int Index { get { return index; } }
 
     private MotherFuckingAudioManager audioManager;
+    private SpriteRenderer renderer;
 
     public void StopPush()
     {
@@ -58,6 +59,7 @@ public class PlayerController : MonoBehaviour
         scoreText = GameObject.Find("TextScore" + index).GetComponent<Text>();
         scoreAnimator = scoreText.gameObject.GetComponent<Animator>();
         scoreText.text = ScoreManager.FinalScore(index - 1).ToString("00");
+        renderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     float NextimeToSpawnTrace = 0.0f;
@@ -154,6 +156,7 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator ChargeAnim(Vector3 direction, float force, float stopDist)
     {
+        direction = new Vector3(direction.x, 0, direction.z);
         RaycastHit hit;
         Vector3 EndPoint;
         if (Physics.SphereCast(transform.position, 0.3f, direction, out hit, force))
@@ -166,6 +169,10 @@ public class PlayerController : MonoBehaviour
         Vector3 startPos = transform.position;
         for(float t = 0; t <= 0.1f; t += Time.deltaTime)
         {
+            if (Physics.SphereCast(transform.position, 0.3f, direction, out hit, force))
+            {
+                EndPoint = hit.point - direction * stopDist;
+            }
             transform.position = Vector3.Lerp(startPos, EndPoint, t * 10);
             yield return null;
         }
@@ -189,21 +196,37 @@ public class PlayerController : MonoBehaviour
         state = PlayerState.NORMAL;
     }
 
+    float modifier = 1f;
     void TestAttackPropultion()
     {
-        Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.2f + transform.right * 0.1f, new Vector3(.5f, .5f, .5f));
+        Vector3 direction = Vector3.zero;
+        Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.2f + transform.right * 0.1f, new Vector3(.5f, .5f, .5f), transform.rotation);
         bool blocked = false;
         foreach (Collider coll in colls)
         {
             if (coll.tag == "Player" && coll.gameObject != this.gameObject)
             {
-                Vector3 direction = (coll.transform.position - transform.position).normalized;
+                direction = (coll.transform.position - transform.position).normalized;
                 blocked = blocked || coll.GetComponent<PlayerController>().Push(direction, chargingAttack*damage, index);
             }
         }
         charging = false;
         anim.SetBool("charging", false);
         anim.SetBool("attack_blocked", blocked);
+
+        if (blocked)
+        {
+            StartCoroutine(CounterMalusEmplification());
+            StartCoroutine(ChargeAnim(-direction, 1f, 0f));
+        }
+    }
+
+    IEnumerator CounterMalusEmplification()
+    {
+        modifier = 5f;
+        yield return new WaitForSeconds(0.2f);
+        modifier = 1f;
+
     }
 
     public int pusher = -1;
@@ -235,14 +258,27 @@ public class PlayerController : MonoBehaviour
         }
         else if (state == PlayerState.ATTACKING)
         {
-            float factor = (power / (1 + chargingAttack * 20))/2;
+            if (Vector3.Angle(-transform.forward, baseForce) < 30f)
+            {
+                // IF GUARDED
+                guarded = true;
+                baseForce = baseForce / 5;
+                power *= .2f;
+                anim.SetTrigger("attack_blocked");
+                StartCoroutine(ClashAnim());
+            }
+            else
+            {
+                float factor = (power / (1 + chargingAttack * 20)) / 2;
 
-            baseForce = factor*baseForce / 3;
-            power *= factor;
-            StartCoroutine(ClashAnim());
+                baseForce = factor * baseForce / 3;
+                power *= factor;
+                StartCoroutine(ClashAnim());
+            }
         }
         else
         {
+            
             transform.LookAt(transform.position - baseForce);
             anim.SetTrigger("pushed");
             StartCoroutine(PushAnim());
@@ -253,12 +289,12 @@ public class PlayerController : MonoBehaviour
         EventManager.onPlayerDamaged.Invoke();
         if (!guarded)
         {
-            damages += power;
+            damages += power * modifier;
             //Vector3 force = baseForce * Mathf.Pow(damages, 1.1f);
             // if (force.magnitude > 3000)
             //     force = force.normalized * 3000;
             //rBody.AddForce(force);
-            StartCoroutine(ChargeAnim(baseForce, damages / 30, 0f));
+            StartCoroutine(ChargeAnim(baseForce, modifier * damages / 30, 0f));
         }
         damageText.text = ((int) damages).ToString("000");
         damageAnimator.SetTrigger("TakeDamage");
@@ -289,7 +325,7 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator ClashAnim()
     {
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(0.8f);
         if (state != PlayerState.KO)
         {
             pusher = -1;
@@ -300,12 +336,22 @@ public class PlayerController : MonoBehaviour
     IEnumerator PushAnim()
     {
         state = PlayerState.PUSHED;
+        StartCoroutine(Blink());
         yield return new WaitForSeconds(0.4f);
-        if(state != PlayerState.KO)
+        if (state != PlayerState.KO)
         {
             pusher = -1;
             state = PlayerState.NORMAL;
         }
+    }
+
+    IEnumerator Blink()
+    {
+        renderer.color = Color.black;
+        yield return new WaitForSeconds(0.1f);
+        renderer.color = Color.gray;
+        yield return new WaitForSeconds(0.1f);
+        renderer.color = Color.white;
     }
 
     public void Eliminate()
