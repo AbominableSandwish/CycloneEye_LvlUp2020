@@ -10,7 +10,7 @@ public class QuitTimerUI : MonoBehaviour
     void Update()
     {
         if (quit) return;
-        if (Input.GetButton("Cancel " + GameManager.PauseIndex))
+        if (Input.GetButton("Cancel " + GameManager.playerOrder[GameManager.PauseIndex-1]))
             timer = Mathf.Min(1, timer + 0.005f);
         else
             timer = 0;

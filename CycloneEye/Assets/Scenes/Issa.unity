@@ -918,6 +918,12 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5173784780754968073, guid: b22ecb7bc1c7d3946b62f85d4db8439d,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 73451cac394e41648b3472708ee97b25,
+        type: 3}
     - target: {fileID: 8541575140457757566, guid: b22ecb7bc1c7d3946b62f85d4db8439d,
         type: 3}
       propertyPath: m_Controller
@@ -14602,6 +14608,7 @@ GameObject:
   - component: {fileID: 1418664880}
   - component: {fileID: 1418664879}
   - component: {fileID: 1418664878}
+  - component: {fileID: 1418664881}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -14674,6 +14681,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &1418664881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1418664877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28caa95c638d2f94e8fd52937840bee0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shakeStrength: 0.1
+  nbrPlayer: 0
 --- !u!1001 &1449401965
 PrefabInstance:
   m_ObjectHideFlags: 0

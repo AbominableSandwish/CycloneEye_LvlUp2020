@@ -11,11 +11,14 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
+    private CameraManager camera;
     public static GameManager Instance;
     public static int playerCount = 2;
     public static int maxRund = 3;
     public static float startTime = 240;
     static int roundCount = 1;
+
+    public static int[] playerOrder = new int[4];
 
     [SerializeField] List<PlayerController> players;
     [SerializeField] List<GameObject> playerDamages;
@@ -37,14 +40,18 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        
         TimeRound = startTime;
         if (roundCount == 1)
             ScoreManager.InitScores();
+        playerCount = 0;
         for (int i = 0; i < players.Count; i++)
         {
-            players[i].eliminated = !(i < playerCount);
-            players[i].gameObject.SetActive(i < playerCount);
-            playerDamages[i].gameObject.SetActive(i < playerCount);
+            players[i].eliminated = playerOrder[i] == -1;
+            players[i].gameObject.SetActive(!players[i].eliminated);
+            playerDamages[i].gameObject.SetActive(!players[i].eliminated);
+            if(!players[i].eliminated)
+                playerCount++;
         }
         blackPanel.Hide();
         state = GameState.INITIALIZE;
@@ -57,6 +64,7 @@ public class GameManager : MonoBehaviour
         int min = (int)(TimeRound / 60.0f);
         int sec = (int)(TimeRound - (min * 60));
         timerText.text = "0"+ min + ":" + sec + "0";
+        camera = Camera.main.GetComponent<CameraManager>();
     }
 
     // Update is called once per frame
@@ -89,6 +97,7 @@ public class GameManager : MonoBehaviour
     {
         eliminationOrder.Add(player);
         player.eliminated = true;
+        camera.RemovePlayer(player);
         //player.gameObject.SetActive(false);
         //EventManager.onPlayerEliminated.Invoke();
 
