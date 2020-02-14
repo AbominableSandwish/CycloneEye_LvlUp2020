@@ -16,7 +16,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject Trace;
 
     private Text scoreText;
+    private Text damageText;
     private Animator scoreAnimator;
+    private Animator damageAnimator;
 
     Animator anim;
 
@@ -26,8 +28,11 @@ public class PlayerController : MonoBehaviour
     float chargingAttack;
     bool charging = false;
 
+    public bool eliminated = false;
+
     public PlayerState State { get { return state; } set { state = value; } }
     public float Damages { get { return damages; } }
+    public int Index { get { return index; } }
 
     public void StopPush()
     {
@@ -42,8 +47,11 @@ public class PlayerController : MonoBehaviour
         state = PlayerState.NORMAL;
         anim = GetComponentInChildren<Animator>();
         rBody = GetComponent<Rigidbody>();
+        damageText = GameObject.Find("TextDamages" + index).GetComponent<Text>();
+        damageAnimator = damageText.gameObject.GetComponent<Animator>();
         scoreText = GameObject.Find("TextScore" + index).GetComponent<Text>();
         scoreAnimator = scoreText.gameObject.GetComponent<Animator>();
+        scoreText.text = ScoreManager.FinalScore(index - 1).ToString("00");
     }
 
     float NextimeToSpawnTrace = 0.0f;
@@ -83,7 +91,7 @@ public class PlayerController : MonoBehaviour
         if (GameManager.State != GameState.PLAYING || state != PlayerState.NORMAL) return;
 
         Vector3 movement = new Vector3(Input.GetAxis("Horizontal " + index), 0, Input.GetAxis("Vertical " + index)) * moveSpeed;
-        if (charging) movement /= 3;
+        if (charging) movement /= 2;
         rBody.AddForce(movement);
         if (rBody.velocity.magnitude > moveSpeed)
             rBody.velocity = rBody.velocity.normalized * moveSpeed;
@@ -110,7 +118,7 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetButton("Attack " + index) && charging)
         {
-            chargingAttack = Mathf.Min(1f, chargingAttack+=Time.deltaTime);
+            chargingAttack = Mathf.Min(1f, chargingAttack+Time.deltaTime);
         }
         if (Input.GetButtonUp("Attack " + index) && charging)
         {
@@ -126,39 +134,68 @@ public class PlayerController : MonoBehaviour
         Instantiate(attackAnim, transform.position + transform.forward*0.2f + transform.right*0.1f, transform.rotation);
         state = PlayerState.ATTACKING;
         rBody.velocity = Vector3.zero;
-        if(chargingAttack < 0.333f)
-        yield return new WaitForSeconds(.333f- chargingAttack);
+        if(chargingAttack < 0.24f)
+        yield return new WaitForSeconds(.24f - chargingAttack);
+        yield return new WaitForSeconds(.1f);
         TestAttackPropultion();
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.6f);
         state = PlayerState.NORMAL;
     }
 
     void TestAttackPropultion()
     {
-        Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.2f + transform.right * 0.1f, new Vector3(.5f, .5f, .5f));
-        foreach(Collider coll in colls)
+        Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.25f + transform.right * 0.1f, new Vector3(.6f, .6f, .6f));
+        //Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.2f + transform.right * 0.1f, new Vector3(.5f, .5f, .5f));
+        foreach (Collider coll in colls)
         {
             if (coll.tag == "Player" && coll.gameObject != this.gameObject)
             {
                 Vector3 direction = (coll.transform.position - transform.position).normalized;
-                coll.GetComponent<PlayerController>().Push(direction, 1+chargingAttack*20);
+                coll.GetComponent<PlayerController>().Push(direction, 1+chargingAttack*20, index);
             }
         }
     }
 
-    public void Push(Vector3 baseForce, float power)
+    public int pusher = -1;
+    public void Push(Vector3 baseForce, float power, int pusherIndex)
     {
-        transform.LookAt(transform.position - baseForce);
-        anim.SetTrigger("pushed");
+        pusher = pusherIndex;
+        if (state == PlayerState.ATTACKING)
+        {
+            float factor = (power / (1 + chargingAttack * 20))/2;
+
+            baseForce = factor*baseForce / 3;
+            power *= factor;
+            print("collide");
+            StartCoroutine(ClashAnim());
+        }
+        else
+        {
+            transform.LookAt(transform.position - baseForce);
+            anim.SetTrigger("pushed");
+            StartCoroutine(PushAnim());
+        }
         anim.SetBool("walking", false);
         anim.SetBool("charging", false);
         charging = false;
         EventManager.onPlayerDamaged.Invoke();
         damages += power;
-        rBody.AddForce(baseForce * Mathf.Pow(damages *10, 1.1f));
-        StartCoroutine(PushAnim());
-        scoreText.text = ((int) damages).ToString();
-        scoreAnimator.SetTrigger("TakeDamage");
+        Vector3 force = baseForce * Mathf.Pow(damages * 10, 1.1f);
+        if (force.magnitude > 5000)
+            force = force.normalized * 5000;
+        rBody.AddForce(force);
+        damageText.text = ((int) damages).ToString("000");
+        damageAnimator.SetTrigger("TakeDamage");
+    }
+
+    IEnumerator ClashAnim()
+    {
+        yield return new WaitForSeconds(0.6f);
+        if (state != PlayerState.KO)
+        {
+            pusher = -1;
+            state = PlayerState.NORMAL;
+        }
     }
 
     IEnumerator PushAnim()
@@ -166,7 +203,10 @@ public class PlayerController : MonoBehaviour
         state = PlayerState.PUSHED;
         yield return new WaitForSeconds(0.4f);
         if(state != PlayerState.KO)
+        {
+            pusher = -1;
             state = PlayerState.NORMAL;
+        }
     }
 
     public void Eliminate()
@@ -204,6 +244,15 @@ public class PlayerController : MonoBehaviour
             multiplier += Time.deltaTime*0.5f;
         }
 
+    }
+
+    public void ChangePointsAnim(int value)
+    {
+        scoreText.text = ScoreManager.FinalScore(index - 1).ToString("00");
+        if (value > 0)
+        scoreAnimator.SetTrigger("score_up");
+        else
+        scoreAnimator.SetTrigger("score_down");
     }
 
 

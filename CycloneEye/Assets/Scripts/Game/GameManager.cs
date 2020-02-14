@@ -12,9 +12,12 @@ public enum GameState
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public static int playerCount = 2;
+    public static int playerCount = 3;
+    public static int maxRund = 1;
+    static int roundCount = 1;
 
     [SerializeField] List<PlayerController> players;
+    [SerializeField] List<GameObject> playerDamages;
     [SerializeField] BlackPanel blackPanel;
     [SerializeField] GameObject startScreen;
     [SerializeField] GameObject endScreen;
@@ -25,6 +28,7 @@ public class GameManager : MonoBehaviour
     GameState state;
     public static GameState State { get { return Instance.state; } }
     public static int PauseIndex { get { return Instance.isPaused; } }
+    public static int Round { get { return roundCount; } }
 
     private float TimeRound = 60 * 4;
     private Text timerText;
@@ -32,6 +36,13 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (roundCount == 1)
+            ScoreManager.InitScores();
+        for (int i = 0; i < players.Count; i++)
+        {
+            players[i].gameObject.SetActive(i < playerCount);
+            playerDamages[i].gameObject.SetActive(i < playerCount);
+        }
         blackPanel.Hide();
         state = GameState.INITIALIZE;
         startScreen.SetActive(true);
@@ -54,7 +65,12 @@ public class GameManager : MonoBehaviour
             TimeRound -= Time.deltaTime;
             int min = (int) (TimeRound / 60.0f);
             int sec = (int) (TimeRound - (min * 60));
-            timerText.text = min + ":" + sec;
+            if(TimeRound <= 0)
+            {
+                TimeRound = 0;
+                EndTime();
+            }
+            timerText.text = min.ToString("00") + ":" + sec.ToString("00");
         }
     }
 
@@ -69,22 +85,50 @@ public class GameManager : MonoBehaviour
     public void RemovePlayer(PlayerController player)
     {
         eliminationOrder.Add(player);
-        player.gameObject.SetActive(false);
+        player.eliminated = true;
+        //player.gameObject.SetActive(false);
         EventManager.onPlayerEliminated.Invoke();
 
         if (eliminationOrder.Count == playerCount - 1)
         {
-            state = GameState.END;
             StartCoroutine(EndAnim());
         }
     }
 
+    public static void EndTime()
+    {
+        Instance.StartCoroutine(Instance.EndAnim());
+    }
+
     IEnumerator EndAnim()
     {
-        endScreen.SetActive(true);
-        yield return new WaitForSeconds(1f);
-        yield return blackPanel.ShowAnim();
-        SceneManager.LoadScene("SceneScore");
+        if (state != GameState.END)
+        {
+            state = GameState.END;
+            for (int i = 0; i < 4; i++)
+            {
+                if (!players[i].eliminated)
+                {
+                    ScoreManager.roundWinners[i]++;
+                    players[i].ChangePointsAnim(+1);
+                }
+
+            }
+            endScreen.SetActive(true);
+            yield return new WaitForSeconds(1f);
+            yield return blackPanel.ShowAnim();
+
+            if (roundCount == maxRund)
+            {
+                roundCount = 1;
+                SceneManager.LoadScene("SceneScore");
+            }
+            else
+            {
+                roundCount++;
+                SceneManager.LoadScene("Issa");
+            }
+        }
     }
 
     public void Pause(int playerIdx)
@@ -110,11 +154,26 @@ public class GameManager : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
+            PlayerController player = other.gameObject.GetComponent<PlayerController>();
+
+            if (player.eliminated) return; // we avoid double count
+
             other.gameObject.GetComponentInChildren<SpriteRenderer>().sortingOrder = -50;
             other.gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-            other.gameObject.GetComponent<PlayerController>().State = PlayerState.KO;
-           endScreen.SetActive(true);
-            state = GameState.END;
+            player.State = PlayerState.KO;
+            if (player.pusher == -1)
+            {
+                ScoreManager.eliminations[player.Index-1]--;
+                player.ChangePointsAnim(-1);
+            }
+            else
+            {
+                ScoreManager.eliminations[player.pusher-1]++;
+                players[player.pusher-1].ChangePointsAnim(+1);
+            }
+           //endScreen.SetActive(true);
+           // state = GameState.END;
+            RemovePlayer(other.gameObject.GetComponent<PlayerController>());
         }
     }
     public static void Quit()
@@ -124,6 +183,7 @@ public class GameManager : MonoBehaviour
     }
     IEnumerator QuitGame()
     {
+        roundCount = 1;
         state = GameState.END;
         yield return new WaitForSeconds(1f);
         yield return blackPanel.ShowAnim();
