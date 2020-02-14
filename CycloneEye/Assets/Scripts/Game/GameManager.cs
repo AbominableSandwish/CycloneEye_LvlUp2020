@@ -68,7 +68,12 @@ public class GameManager : MonoBehaviour
         timerText.text = "0"+ min + ":" + sec + "0";
         camera = Camera.main.GetComponent<CameraManager>();
         audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
-        //audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.MAIN, true);
+       
+    }
+
+    void Start()
+    {
+        audioManager.PlaySound(MotherFuckingAudioManager.SoundList.WIND, true);
     }
 
     // Update is called once per frame

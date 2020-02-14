@@ -21,7 +21,8 @@ public class MotherFuckingAudioManager : MonoBehaviour
 
     public enum SoundList
     {
-        PLAYER_FALL
+        PLAYER_FALL,
+        WIND
     }
 
     public enum AlertList
@@ -41,8 +42,24 @@ public class MotherFuckingAudioManager : MonoBehaviour
     [SerializeField] private AudioClip gameOver;
     [Header("Sound")]
     [SerializeField] private AudioClip playeFall;
+    [SerializeField] private AudioClip Wind;
     [Header("Alert")]
     [SerializeField] private AudioClip ButtonValidation;
+
+    public void StopAllSound()
+    {
+        foreach (AudioSource emitter in emitters)
+        {
+            if (emitter.isPlaying)
+            {
+                if (emitter.outputAudioMixerGroup == AudioConfig.Instance.alert)
+                {
+                    emitter.Stop();
+                    emitter.clip = null;
+                }
+            }
+        }
+    }
 
     private void Awake()
     {
@@ -98,7 +115,7 @@ public class MotherFuckingAudioManager : MonoBehaviour
         }
     }
 
-    public void PlaySound(SoundList sound)
+    public void PlaySound(SoundList sound, bool loop = false)
     {
         AudioSource emitterAvailable = null;
         
@@ -113,12 +130,16 @@ public class MotherFuckingAudioManager : MonoBehaviour
 
         if (emitterAvailable != null)
         {
-            emitterAvailable.loop = false;
+            emitterAvailable.loop = loop;
             
             switch (sound)
             {
                 case SoundList.PLAYER_FALL:
                     emitterAvailable.clip = playeFall;
+                    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.sound;
+                    break;
+                case SoundList.WIND:
+                    emitterAvailable.clip = Wind;
                     emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.sound;
                     break;
             }
