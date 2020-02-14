@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public static int playerCount = 2;
     public static int maxRund = 3;
-    public static float startTime = 240;
+    public static float startTime = 180;
     static int roundCount = 1;
 
     public static int[] playerOrder = new int[4] { 0,1,2,3 };
