@@ -40,13 +40,13 @@ public class MenuManager : MonoBehaviour
         if (!gamePanel.activeSelf && !settingsPanel.activeSelf && menuActif)
         {
             timer -= Time.deltaTime;
-            if (Input.GetAxis("Vertical") > 0 && index > 0 && timer <= 0)
+            if (Input.GetAxisRaw("Vertical") > 0 && index > 0 && timer <= 0)
             {
                 timer = 0.5f;
                 index--;
                 UpdateCursors();
             }
-            else if (Input.GetAxis("Vertical") < 0 && index < menuCursors.Length - 1 && timer <= 0)
+            else if (Input.GetAxisRaw("Vertical") < 0 && index < menuCursors.Length - 1 && timer <= 0)
             {
                 timer = 0.5f;
                 index++;
@@ -56,16 +56,20 @@ public class MenuManager : MonoBehaviour
             {
                 StartCoroutine(ActivatedMenu());
             }
+            else if (Input.GetAxisRaw("Vertical") == 0)
+            {
+                timer = 0;
+            }
         } else if (settingsPanel.gameObject.activeSelf)
         {
             timer -= Time.deltaTime;
-            if (Input.GetAxis("Vertical") > 0 && settingsIndex > 0 && timer <= 0)
+            if (Input.GetAxisRaw("Vertical") > 0 && settingsIndex > 0 && timer <= 0)
             {
                 timer = 0.5f;
                 settingsIndex--;
                 UpdateSettingsCursors();
             }
-            else if (Input.GetAxis("Vertical") < 0 && settingsIndex < 1 && timer <= 0)
+            else if (Input.GetAxisRaw("Vertical") < 0 && settingsIndex < 1 && timer <= 0)
             {
                 timer = 0.5f;
                 settingsIndex++;
@@ -74,6 +78,10 @@ public class MenuManager : MonoBehaviour
             else if(Input.GetButtonDown("Cancel"))
             {
                 settingsPanel.gameObject.SetActive(false);
+            }
+            else if (Input.GetAxisRaw("Vertical") == 0)
+            {
+                timer = 0;
             }
             else
             {
@@ -115,15 +123,19 @@ public class MenuManager : MonoBehaviour
     void TryChangeSliderValue(Slider s)
     {
         timerH -= Time.deltaTime;
-        if (Input.GetAxis("Horizontal") < 0 && s.value > 0 && timerH <= 0)
+        if (Input.GetAxisRaw("Horizontal") < 0 && s.value > 0 && timerH <= 0)
         {
             timerH = 0.5f;
             s.value--;
         }
-        else if (Input.GetAxis("Horizontal") > 0 && s.value < s.maxValue && timerH <= 0)
+        else if (Input.GetAxisRaw("Horizontal") > 0 && s.value < s.maxValue && timerH <= 0)
         {
             timerH = 0.5f;
             s.value++;
+        }
+        else if (Input.GetAxisRaw("Horizontal") == 0)
+        {
+            timerH = 0;
         }
     }
 
