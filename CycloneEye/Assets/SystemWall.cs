@@ -25,6 +25,7 @@ public class SystemWall : MonoBehaviour
             {
                 print("BOUM");
                 GetComponent<Animator>().SetTrigger("Destroy");
+                EventManager.onWallDestroyed.Invoke();
             }
         }
     }

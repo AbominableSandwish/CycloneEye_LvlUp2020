@@ -8,4 +8,6 @@ public static class EventManager
 
     public static UnityEvent onPlayerEliminated = new UnityEvent();
     public static UnityEvent onPlayerDamaged = new UnityEvent();
+    public static UnityEvent onWallDestroyed = new UnityEvent();
+    
 }

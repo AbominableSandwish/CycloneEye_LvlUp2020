@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public enum PlayerState
 {
-    NORMAL, ATTACKING, PUSHED, KO
+    NORMAL, ATTACKING, PUSHED, KO, GUARDING
 }
 
 public class PlayerController : MonoBehaviour
@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] PlayerState state;
     float chargingAttack;
     bool charging = false;
+    bool guarding = false;
 
     public bool eliminated = false;
 
@@ -83,20 +84,22 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
 
-        if (Input.GetButtonDown("Start " + index))
+        int controllerId = GameManager.playerOrder[index - 1];
+
+        if (Input.GetButtonDown("Start " + controllerId))
             GameManager.Instance.Pause(index);
 
-        if (GameManager.State != GameState.PLAYING || state != PlayerState.NORMAL) return;
+        if (GameManager.State != GameState.PLAYING || (state != PlayerState.NORMAL && state != PlayerState.GUARDING)) return;
 
-        Vector3 movement = new Vector3(Input.GetAxis("Horizontal " + index), 0, Input.GetAxis("Vertical " + index)) * moveSpeed;
+        Vector3 movement = new Vector3(Input.GetAxis("Horizontal " + controllerId), 0, Input.GetAxis("Vertical " + controllerId)) * moveSpeed;
         if (charging) movement /= 2;
+        if (guarding) movement *= 0;
         rBody.AddForce(movement);
         if (rBody.velocity.magnitude > moveSpeed)
             rBody.velocity = rBody.velocity.normalized * moveSpeed;
 
-        if (!charging)
+        if (!charging && !guarding)
             anim.speed = movement.magnitude/moveSpeed;
         else
             anim.speed = 1;
@@ -104,27 +107,46 @@ public class PlayerController : MonoBehaviour
         if (movement.magnitude > 0)
         {
             anim.SetBool("walking", true);
-            transform.LookAt(transform.position+movement);
+            if (!charging && !guarding)
+                transform.LookAt(transform.position+movement);
         }
         else { 
             anim.SetBool("walking", false);
         }
+        if (!charging)
+        {
+            if (Input.GetButtonDown("Guard " + controllerId))
+            {
+                state = PlayerState.GUARDING;
+                guarding = true;
+                anim.SetBool("guarding", true);
+            }
+            if (Input.GetButtonUp("Guard " + controllerId) && guarding)
+            {
+                state = PlayerState.NORMAL;
+                guarding = false;
+                anim.SetBool("guarding", false);
+            }
+        }
 
-        if (Input.GetButtonDown("Attack " + index))
+        if (!guarding)
         {
-            charging = true;
-            chargingAttack = 0;
-            anim.SetBool("charging", true);
-        }
-        if (Input.GetButton("Attack " + index) && charging)
-        {
-            chargingAttack = Mathf.Min(1f, chargingAttack+Time.deltaTime);
-        }
-        if (Input.GetButtonUp("Attack " + index) && charging)
-        {
-            charging = false;
-            anim.SetBool("charging", false);
-            StartCoroutine(AttackAnim());
+            if (Input.GetButtonDown("Attack " + controllerId))
+            {
+                charging = true;
+                chargingAttack = 0;
+                anim.SetBool("charging", true);
+            }
+            if (Input.GetButton("Attack " + controllerId) && charging)
+            {
+                chargingAttack = Mathf.Min(1f, chargingAttack + Time.deltaTime);
+            }
+            if (Input.GetButtonUp("Attack " + controllerId) && charging)
+            {
+                charging = false;
+                anim.SetBool("charging", false);
+                StartCoroutine(AttackAnim());
+            }
         }
     }
 
@@ -160,7 +182,30 @@ public class PlayerController : MonoBehaviour
     public void Push(Vector3 baseForce, float power, int pusherIndex)
     {
         pusher = pusherIndex;
-        if (state == PlayerState.ATTACKING)
+        bool guarded = false;
+        if (state == PlayerState.GUARDING)
+        {
+            print(Vector3.Angle(-transform.forward, baseForce));
+            if (Vector3.Angle(-transform.forward, baseForce) < 45f)
+            {
+                // IF GUARDED
+                guarded = true;
+                baseForce = baseForce / 5;
+                power *= .2f;
+                anim.SetTrigger("guard_hit");
+            }
+            else
+            {
+                // IF GUARD FAILD
+                guarded = false;
+                guarding = false;
+                anim.SetBool("guarding", false);
+                transform.LookAt(transform.position - baseForce);
+                anim.SetTrigger("pushed");
+                StartCoroutine(PushAnim());
+            }
+        }
+        else if (state == PlayerState.ATTACKING)
         {
             float factor = (power / (1 + chargingAttack * 20))/2;
 
@@ -179,15 +224,27 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("charging", false);
         charging = false;
         EventManager.onPlayerDamaged.Invoke();
-        damages += power;
-        Vector3 force = baseForce * Mathf.Pow(damages * 10, 1.1f);
-       // if (force.magnitude > 5000)
-       //     force = force.normalized * 5000;
-        rBody.AddForce(force);
+        if (!guarded)
+        {
+            damages += power;
+            Vector3 force = baseForce * Mathf.Pow(damages * 10, 1.1f);
+            // if (force.magnitude > 5000)
+            //     force = force.normalized * 5000;
+            rBody.AddForce(force);
+        }
         damageText.text = ((int) damages).ToString("000");
         damageAnimator.SetTrigger("TakeDamage");
     }
 
+    IEnumerator GuardAnim()
+    {
+        yield return new WaitForSeconds(0.4f);
+        if (state != PlayerState.KO)
+        {
+            pusher = -1;
+            state = PlayerState.NORMAL;
+        }
+    }
     IEnumerator ClashAnim()
     {
         yield return new WaitForSeconds(0.6f);

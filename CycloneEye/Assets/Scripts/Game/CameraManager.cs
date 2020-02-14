@@ -9,6 +9,7 @@ public class CameraManager : MonoBehaviour
     void Start()
     {
         EventManager.onPlayerDamaged.AddListener(Chake);
+        EventManager.onWallDestroyed.AddListener(Chake);
     }
 
     void Chake()
