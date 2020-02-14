@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public enum PlayerState
 {
-    NORMAL, ATTACKING, PUSHED, KO, GUARDING
+    NORMAL, ATTACKING, PUSHED, KO, GUARDING, LOCK
 }
 
 public class PlayerController : MonoBehaviour
@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float moveSpeed;
     [SerializeField] GameObject attackAnim;
     [SerializeField] private GameObject Trace;
+    [SerializeField] float damage = 15;
 
     private Text scoreText;
     private Text damageText;
@@ -84,7 +85,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         int controllerId = GameManager.playerOrder[index - 1];
 
         if (Input.GetButtonDown("Start " + controllerId))
@@ -198,6 +198,7 @@ public class PlayerController : MonoBehaviour
                 baseForce = baseForce / 5;
                 power *= .2f;
                 anim.SetTrigger("guard_hit");
+                StartCoroutine(GuardAnim());
             }
             else
             {
@@ -216,7 +217,6 @@ public class PlayerController : MonoBehaviour
 
             baseForce = factor*baseForce / 3;
             power *= factor;
-            print("collide");
             StartCoroutine(ClashAnim());
         }
         else
@@ -232,7 +232,7 @@ public class PlayerController : MonoBehaviour
         if (!guarded)
         {
             damages += power;
-            Vector3 force = baseForce * Mathf.Pow(damages * 10, 1.1f);
+            Vector3 force = baseForce * Mathf.Pow(damages * damage, 1.1f);
             // if (force.magnitude > 5000)
             //     force = force.normalized * 5000;
             rBody.AddForce(force);
@@ -244,11 +244,24 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator GuardAnim()
     {
-        yield return new WaitForSeconds(0.4f);
+        state = PlayerState.LOCK;
+        yield return new WaitForSeconds(0.3f);
         if (state != PlayerState.KO)
         {
             pusher = -1;
-            state = PlayerState.NORMAL;
+
+            if (Input.GetButton("Guard " + GameManager.playerOrder[index - 1]))
+            {
+                anim.SetBool("guarding", true);
+                guarding = true;
+                state = PlayerState.GUARDING;
+            }
+            else
+            {
+                anim.SetBool("guarding", false);
+                guarding = false;
+                state = PlayerState.NORMAL;
+            }
         }
     }
     IEnumerator ClashAnim()

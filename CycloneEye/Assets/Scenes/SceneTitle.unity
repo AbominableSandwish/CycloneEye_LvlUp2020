@@ -376,6 +376,7 @@ MonoBehaviour:
   - {fileID: 443631564}
   notEnoughtPlayer: {fileID: 371472182}
   pressStartToPlay: {fileID: 473219118}
+  menuManager: {fileID: 605253133}
 --- !u!1 &47261866
 GameObject:
   m_ObjectHideFlags: 0

@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
 
             }
             endScreen.SetActive(true);
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(2f);
             yield return blackPanel.ShowAnim();
 
             if (roundCount == maxRund)
