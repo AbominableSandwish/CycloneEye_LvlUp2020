@@ -156,11 +156,11 @@ public class PlayerController : MonoBehaviour
         Instantiate(attackAnim, transform.position + transform.forward*0.2f + transform.right*0.1f, transform.rotation);
         state = PlayerState.ATTACKING;
         rBody.velocity = Vector3.zero;
-        if(chargingAttack < 0.24f)
-        yield return new WaitForSeconds(.24f - chargingAttack);
+        if(chargingAttack < 0.12f)
+        yield return new WaitForSeconds(.12f - chargingAttack);
         yield return new WaitForSeconds(.1f);
         TestAttackPropultion();
-        yield return new WaitForSeconds(.6f);
+        yield return new WaitForSeconds(.7f);
         state = PlayerState.NORMAL;
     }
 
