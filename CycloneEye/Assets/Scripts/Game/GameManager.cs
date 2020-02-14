@@ -51,16 +51,22 @@ public class GameManager : MonoBehaviour
         eliminationOrder = new List<PlayerController>();
         StartCoroutine(ReadyStartAnim());
         timerText = GameObject.Find("TextTimer").GetComponent<Text>();
+        int min = (int)(TimeRound / 60.0f);
+        int sec = (int)(TimeRound - (min * 60));
+        timerText.text = "0"+ min + ":" + sec + "0";
     }
 
     // Update is called once per frame
     void Update()
     {
-        //TIMER
-        TimeRound -= Time.deltaTime;
-        int min = (int)(TimeRound / 60.0f);
-        int sec = (int)(TimeRound - (min * 60));
-        timerText.text = min + ":" + sec;
+        if (state == GameState.PLAYING)
+        {
+            //TIMER
+            TimeRound -= Time.deltaTime;
+            int min = (int) (TimeRound / 60.0f);
+            int sec = (int) (TimeRound - (min * 60));
+            timerText.text = min + ":" + sec;
+        }
     }
 
     IEnumerator ReadyStartAnim()
@@ -132,6 +138,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            other.gameObject.GetComponentInChildren<SpriteRenderer>().sortingOrder = -50;
+            other.gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            other.gameObject.GetComponent<PlayerController>().State = PlayerState.KO;
+           endScreen.SetActive(true);
+            state = GameState.END;
+        }
+    }
     public static void Quit()
     {
         Time.timeScale = 1;
