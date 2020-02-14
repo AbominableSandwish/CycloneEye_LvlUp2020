@@ -15,6 +15,8 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] Slider numberTurnSlider;
     [SerializeField] Slider timerSlider;
+    [SerializeField] Slider[] audioSliders;
+
 
     bool initializing = false;
     int index = 0;
@@ -72,7 +74,7 @@ public class MenuManager : MonoBehaviour
                 settingsIndex--;
                 UpdateSettingsCursors();
             }
-            else if (Input.GetAxisRaw("Vertical") < 0 && settingsIndex < 1 && timer <= 0)
+            else if (Input.GetAxisRaw("Vertical") < 0 && settingsIndex < 4 && timer <= 0)
             {
                 timer = 0.5f;
                 settingsIndex++;
@@ -94,6 +96,15 @@ public class MenuManager : MonoBehaviour
                         break;
                     case 1:
                         TryChangeSliderValue(timerSlider);
+                        break;
+                    case 2:
+                        TryChangeSliderValue(audioSliders[0]);
+                        break;
+                    case 3:
+                        TryChangeSliderValue(audioSliders[1]);
+                        break;
+                    case 4:
+                        TryChangeSliderValue(audioSliders[2]);
                         break;
                 }
             }
