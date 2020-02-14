@@ -7,7 +7,8 @@ using UnityEngine.SceneManagement;
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] BlackPanel blackPanel;
-    [SerializeField] GameObject[] menuCursors;
+    [SerializeField] GameObject[] menuCursors; 
+    [SerializeField] GameObject[] settingsMenuCursors;
 
     [SerializeField] GameObject settingsPanel;
     [SerializeField] GameObject gamePanel;
@@ -19,6 +20,8 @@ public class MenuManager : MonoBehaviour
     int index = 0;
     float timer = 0;
     bool menuActif = true;
+
+    int settingsIndex = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -39,13 +42,13 @@ public class MenuManager : MonoBehaviour
             timer -= Time.deltaTime;
             if (Input.GetAxis("Vertical") > 0 && index > 0 && timer <= 0)
             {
-                timer = 0.3f;
+                timer = 0.5f;
                 index--;
                 UpdateCursors();
             }
             else if (Input.GetAxis("Vertical") < 0 && index < menuCursors.Length - 1 && timer <= 0)
             {
-                timer = 0.3f;
+                timer = 0.5f;
                 index++;
                 UpdateCursors();
             }
@@ -53,6 +56,38 @@ public class MenuManager : MonoBehaviour
             {
                 StartCoroutine(ActivatedMenu());
             }
+        } else if (settingsPanel.gameObject.activeSelf)
+        {
+            timer -= Time.deltaTime;
+            if (Input.GetAxis("Vertical") > 0 && settingsIndex > 0 && timer <= 0)
+            {
+                timer = 0.5f;
+                settingsIndex--;
+                UpdateSettingsCursors();
+            }
+            else if (Input.GetAxis("Vertical") < 0 && settingsIndex < 1 && timer <= 0)
+            {
+                timer = 0.5f;
+                settingsIndex++;
+                UpdateSettingsCursors();
+            }
+            else if(Input.GetButtonDown("Cancel"))
+            {
+                settingsPanel.gameObject.SetActive(false);
+            }
+            else
+            {
+                switch (settingsIndex)
+                {
+                    case 0:
+                        TryChangeSliderValue(numberTurnSlider);
+                        break;
+                    case 1:
+                        TryChangeSliderValue(timerSlider);
+                        break;
+                }
+            }
+            
         }
     }
 
@@ -66,6 +101,8 @@ public class MenuManager : MonoBehaviour
                 gamePanel.SetActive(true);
                 break;
             case 1:
+                settingsIndex = 0;
+                UpdateSettingsCursors();
                 settingsPanel.SetActive(true);
                 break;
             case 2:
@@ -74,13 +111,35 @@ public class MenuManager : MonoBehaviour
                 break;
         }
     }
+    float timerH = 0;
+    void TryChangeSliderValue(Slider s)
+    {
+        timerH -= Time.deltaTime;
+        if (Input.GetAxis("Horizontal") < 0 && s.value > 0 && timerH <= 0)
+        {
+            timerH = 0.5f;
+            s.value--;
+        }
+        else if (Input.GetAxis("Horizontal") > 0 && s.value < s.maxValue && timerH <= 0)
+        {
+            timerH = 0.5f;
+            s.value++;
+        }
+    }
 
     void UpdateCursors()
     {
         for(int i = 0; i < menuCursors.Length; i++)
         {
             menuCursors[i].GetComponent<Image>().enabled = (i == index);
-        }   
+        }
+    }
+    void UpdateSettingsCursors()
+    {
+        for (int i = 0; i < settingsMenuCursors.Length; i++)
+        {
+            settingsMenuCursors[i].GetComponent<Image>().enabled = (i == settingsIndex);
+        }
     }
 
     public void Play()
