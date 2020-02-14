@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public enum GameState
@@ -74,11 +75,10 @@ public class GameManager : MonoBehaviour
 
     IEnumerator EndAnim()
     {
-        print("GAME! -> \"Go to Score Scene\" animation");
         endScreen.SetActive(true);
         yield return new WaitForSeconds(1f);
         yield return blackPanel.ShowAnim();
-        print("CHANGE SCENE");
+        SceneManager.LoadScene("SceneScore");
     }
 
     public void Pause(int playerIdx)
@@ -99,5 +99,19 @@ public class GameManager : MonoBehaviour
             pauseScreen.SetActive(true);
         }
     }
+
+    public static void Quit()
+    {
+        Time.timeScale = 1;
+        Instance.StartCoroutine(Instance.QuitGame());
+    }
+    IEnumerator QuitGame()
+    {
+        state = GameState.END;
+        yield return new WaitForSeconds(1f);
+        yield return blackPanel.ShowAnim();
+        SceneManager.LoadScene("SceneTitle");
+    }
+
 
 }
