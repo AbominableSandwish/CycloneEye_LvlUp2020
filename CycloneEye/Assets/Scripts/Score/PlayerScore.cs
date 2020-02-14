@@ -6,6 +6,7 @@ public class PlayerScore : MonoBehaviour
 {
     [SerializeField] int index;
     [SerializeField] GameObject winnerIcon;
+    [SerializeField] GameObject goldHammer;
 
     [SerializeField] List<GameObject> panels;
 
@@ -27,5 +28,10 @@ public class PlayerScore : MonoBehaviour
         }
         yield return new WaitForSeconds(0.5f);
         winnerIcon.gameObject.SetActive(ScoreManager.IsWinner(index));
+        yield return null;
+        RaycastHit hit;
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(winnerIcon.transform.position), out hit))
+            goldHammer.transform.position = hit.point;
+        goldHammer.SetActive(ScoreManager.IsWinner(index));
     }
 }
