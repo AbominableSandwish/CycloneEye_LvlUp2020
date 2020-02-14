@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
             if (NextimeToSpawnTrace <= Time.time)
             {
                 NextimeToSpawnTrace = Time.deltaTime + 0.0f;
-
+                Trace.GetComponent<SystemTrace>().SetTrace(GetComponent<SpriteRenderer>().sprite);
                 Instantiate(Trace, transform.position, transform.localRotation, GameObject.Find("Stage").transform);
             }
             return;

@@ -6,7 +6,7 @@ public class SystemTrace : MonoBehaviour
 {
     private SpriteRenderer renderer;
 
-    public SystemTrace(Sprite sprite)
+    public void SetTrace(Sprite sprite)
     {
         this.renderer.sprite = sprite;
     }
