@@ -51,6 +51,8 @@ MonoBehaviour:
   attackAnim: {fileID: 5133071675062285817, guid: 23ca2b9d61666264c9df803277ab43b0,
     type: 3}
   Trace: {fileID: 8456305975947988226, guid: ddeceb0d9c24a574689795b9e7d95e48, type: 3}
+  damage: 50
+  dashForce: 3
   state: 0
   eliminated: 0
   pusher: -1
@@ -81,7 +83,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.3
+  m_Radius: 0.2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3733537096132629781
 GameObject:
