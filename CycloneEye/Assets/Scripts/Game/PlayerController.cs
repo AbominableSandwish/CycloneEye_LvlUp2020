@@ -19,7 +19,6 @@ public class PlayerController : MonoBehaviour
 
     Animator anim;
 
-
     float damages;
     Rigidbody rBody;
     [SerializeField] PlayerState state;
@@ -27,6 +26,8 @@ public class PlayerController : MonoBehaviour
     bool charging = false;
 
     public PlayerState State { get { return state; } }
+    public float Damages { get { return damages; } }
+
     public void StopPush()
     {
         rBody.velocity = Vector3.zero;
@@ -58,6 +59,11 @@ public class PlayerController : MonoBehaviour
         if (rBody.velocity.magnitude > moveSpeed)
             rBody.velocity = rBody.velocity.normalized * moveSpeed;
 
+        if (!charging)
+            anim.speed = movement.magnitude/moveSpeed;
+        else
+            anim.speed = 1;
+
         if (movement.magnitude > 0)
         {
             anim.SetBool("walking", true);
@@ -71,6 +77,7 @@ public class PlayerController : MonoBehaviour
         {
             charging = true;
             chargingAttack = 0;
+            anim.SetBool("charging", true);
         }
         if (Input.GetButton("Attack " + index) && charging)
         {
@@ -79,24 +86,27 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonUp("Attack " + index) && charging)
         {
             charging = false;
+            anim.SetBool("charging", false);
             StartCoroutine(AttackAnim());
         }
     }
 
+
     IEnumerator AttackAnim()
     {
-        Instantiate(attackAnim, transform.position + transform.forward, transform.rotation);
+        Instantiate(attackAnim, transform.position + transform.forward*0.2f + transform.right*0.1f, transform.rotation);
         state = PlayerState.ATTACKING;
         rBody.velocity = Vector3.zero;
-        yield return new WaitForSeconds(.2f);
+        if(chargingAttack < 0.333f)
+        yield return new WaitForSeconds(.333f- chargingAttack);
         TestAttackPropultion();
-        yield return new WaitForSeconds(.8f);
+        yield return new WaitForSeconds(.5f);
         state = PlayerState.NORMAL;
     }
 
     void TestAttackPropultion()
     {
-        Collider[] colls = Physics.OverlapBox(transform.position + transform.forward, new Vector3(.5f, .5f, .5f));
+        Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.2f + transform.right * 0.1f, new Vector3(.5f, .5f, .5f));
         foreach(Collider coll in colls)
         {
             if (coll.tag == "Player" && coll.gameObject != this.gameObject)
@@ -109,10 +119,13 @@ public class PlayerController : MonoBehaviour
 
     public void Push(Vector3 baseForce, float power)
     {
+        transform.LookAt(transform.position - baseForce);
+        anim.SetTrigger("pushed");
         anim.SetBool("walking", false);
+        anim.SetBool("charging", false);
         charging = false;
         EventManager.onPlayerDamaged.Invoke();
-        damages += 1000 * power;
+        damages += 100 * power;
         rBody.AddForce(baseForce * damages);
         StartCoroutine(PushAnim());
         scoreText.text = ((int) damages).ToString();
