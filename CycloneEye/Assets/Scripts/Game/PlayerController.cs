@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     float chargingAttack;
     bool charging = false;
 
-    public PlayerState State { get { return state; } }
+    public PlayerState State { get { return state; } set { state = value; } }
     public float Damages { get { return damages; } }
 
     public void StopPush()
@@ -48,6 +48,12 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (state == PlayerState.KO)
+        {
+            Fall();
+            return;
+        }
+
         if (Input.GetButtonDown("Start " + index))
             GameManager.Instance.Pause(index);
 
@@ -136,11 +142,46 @@ public class PlayerController : MonoBehaviour
     {
         state = PlayerState.PUSHED;
         yield return new WaitForSeconds(0.4f);
-        state = PlayerState.NORMAL;
+        if(state != PlayerState.KO)
+            state = PlayerState.NORMAL;
     }
 
     public void Eliminate()
     {
         EventManager.onPlayerEliminated.Invoke();
     }
+
+    private Vector3 centerPos = Vector3.zero;
+
+    private float counter = 0.0f;
+    private float radius = 0.0f;
+    private float velocity = 0.0f;
+    private float multiplier = 1.0f;
+
+    public void Fall()
+    {
+        if (centerPos == Vector3.zero)
+            centerPos = transform.position;
+        Vector3 direction = GameObject.Find("CoreCyclone").transform.position - transform.position;
+        centerPos += direction.normalized * Time.deltaTime * velocity;
+
+        counter += Time.deltaTime * multiplier;
+        transform.position = centerPos + new Vector3(Mathf.Cos(counter)*radius, 0, Mathf.Sin(counter)*radius);
+
+        if (velocity <= 10.0f)
+            velocity += Time.deltaTime * 2;
+
+        if (radius <= 6.0f)
+        {
+            radius += Time.deltaTime * 3;
+           
+        }
+        else
+        {
+            multiplier += Time.deltaTime*0.5f;
+        }
+
+    }
+
+
 }
