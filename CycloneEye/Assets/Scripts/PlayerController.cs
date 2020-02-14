@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
 
     float damages;
     Rigidbody rBody;
-    PlayerState state;
+    [SerializeField] PlayerState state;
     float chargingAttack;
     bool charging = false;
 
