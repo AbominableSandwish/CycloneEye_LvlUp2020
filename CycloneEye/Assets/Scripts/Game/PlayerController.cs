@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
     public int Index { get { return index; } }
 
     private MotherFuckingAudioManager audioManager;
+    private SpriteRenderer renderer;
 
     public void StopPush()
     {
@@ -58,6 +59,7 @@ public class PlayerController : MonoBehaviour
         scoreText = GameObject.Find("TextScore" + index).GetComponent<Text>();
         scoreAnimator = scoreText.gameObject.GetComponent<Animator>();
         scoreText.text = ScoreManager.FinalScore(index - 1).ToString("00");
+        renderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     float NextimeToSpawnTrace = 0.0f;
@@ -276,6 +278,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            
             transform.LookAt(transform.position - baseForce);
             anim.SetTrigger("pushed");
             StartCoroutine(PushAnim());
@@ -333,12 +336,22 @@ public class PlayerController : MonoBehaviour
     IEnumerator PushAnim()
     {
         state = PlayerState.PUSHED;
+        StartCoroutine(Blink());
         yield return new WaitForSeconds(0.4f);
-        if(state != PlayerState.KO)
+        if (state != PlayerState.KO)
         {
             pusher = -1;
             state = PlayerState.NORMAL;
         }
+    }
+
+    IEnumerator Blink()
+    {
+        renderer.color = Color.black;
+        yield return new WaitForSeconds(0.1f);
+        renderer.color = Color.gray;
+        yield return new WaitForSeconds(0.1f);
+        renderer.color = Color.white;
     }
 
     public void Eliminate()
