@@ -6,11 +6,14 @@ public class PrepareGame : MonoBehaviour
 {
     [SerializeField] GameObject[] playerOn;
     [SerializeField] GameObject[] playerOff;
+    [SerializeField] GameObject[] mapSelectors;
 
     [SerializeField] GameObject notEnoughtPlayer;
     [SerializeField] GameObject pressStartToPlay;
     [SerializeField] MenuManager menuManager;
     private MotherFuckingAudioManager audioManager;
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -20,10 +23,33 @@ public class PrepareGame : MonoBehaviour
             GameManager.playerOrder[i] = -1;
     }
 
+    void UpdateMapSelector()
+    {
+        for (int i = 0; i < mapSelectors.Length; i++)
+            mapSelectors[i].gameObject.SetActive(i == GameManager.selectedMap);
+    }
+
+    public void SelectMap(int idx)
+    {
+        GameManager.selectedMap = idx;
+        UpdateMapSelector();
+    }
     // Update is called once per frame
     void Update()
     {
-        for(int i = 0; i <= 4; i++)
+        if(Input.GetButtonDown("L") && GameManager.selectedMap > 0)
+        {
+            GameManager.selectedMap--;
+            UpdateMapSelector();
+        }
+        if (Input.GetButtonDown("R") && GameManager.selectedMap < mapSelectors.Length-1)
+        {
+            GameManager.selectedMap++;
+            UpdateMapSelector();
+        }
+
+
+        for (int i = 0; i <= 4; i++)
         {
             if(Input.GetButtonDown("Attack " + i))
             {

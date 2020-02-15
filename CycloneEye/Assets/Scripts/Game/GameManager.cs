@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public static int playerCount = 2;
     public static int maxRund = 3;
     public static float startTime = 180;
+    public static int selectedMap = 0;
     static int roundCount = 1;
 
     public static int[] playerOrder = new int[4] { 0,1,2,3 };
@@ -147,7 +148,7 @@ public class GameManager : MonoBehaviour
             else
             {
                 roundCount++;
-                SceneManager.LoadScene("Issa");
+                SceneManager.LoadScene("Stage" + (GameManager.selectedMap + 1));
             }
         }
     }
