@@ -286,7 +286,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Vector3.Angle(-transform.forward, baseForce) < 30f)
             {
-                // IF GUARDED
+                audioManager.PlaySound(MotherFuckingAudioManager.SoundList.PARADE);
                 guarded = true;
                 baseForce = baseForce / 5;
                 power *= .2f;

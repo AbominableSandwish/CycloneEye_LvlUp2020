@@ -3640,32 +3640,32 @@ PrefabInstance:
     - target: {fileID: 4920459095771622935, guid: 2c0f315102330874884983da9a8696fa,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 1920
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4920459095771622935, guid: 2c0f315102330874884983da9a8696fa,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 1080
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4920459095771622935, guid: 2c0f315102330874884983da9a8696fa,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4920459095771622935, guid: 2c0f315102330874884983da9a8696fa,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4920459095771622935, guid: 2c0f315102330874884983da9a8696fa,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4920459095771622935, guid: 2c0f315102330874884983da9a8696fa,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4920459095771622935, guid: 2c0f315102330874884983da9a8696fa,
         type: 3}
@@ -10810,7 +10810,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 822db3b0f13f2654b8fe4e38d9e8ff8d, type: 3}
   - {fileID: 8300000, guid: 41cc750211699fe41936c17b08276cfb, type: 3}
   - {fileID: 8300000, guid: ff8754925d39eff47b627225a2af0a0c, type: 3}
-  parade: {fileID: 0}
+  parade: {fileID: 8300000, guid: e83de3e20c37aba4cb23d5388a9714fb, type: 3}
   ButtonValidation: {fileID: 8300000, guid: 09cf70bf118cc884b932e4b422944c21, type: 3}
   Winner: {fileID: 8300000, guid: 0fba6c3e5ab5ab14c801cecb4b448173, type: 3}
   PointLvl1: {fileID: 8300000, guid: 896d5149143250a4793137718c19b4e1, type: 3}
