@@ -6,7 +6,7 @@ using Vector3 = UnityEngine.Vector3;
 
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] float shakeStrength = 0.1f;
+    float shakeStrength = 2.0f;
     private Vector3 centerStage;
 
     [SerializeField] private int nbrPlayer = 0;
@@ -20,7 +20,6 @@ public class CameraManager : MonoBehaviour
     {
         centerStage = transform.position - Vector3.up;
         EventManager.onPlayerDamaged.AddListener(Chake);
-        EventManager.onWallDestroyed.AddListener(Chake);
 
         this.players = new List<Transform>();
 
@@ -143,14 +142,14 @@ public class CameraManager : MonoBehaviour
             Vector3 target = new Vector3(Random.Range(-1f, 1f) * shakeStrength, originPos.y, Random.Range(-1f, 1f) * shakeStrength);
             for(float t = 0; t < 0.01f; t += Time.deltaTime)
             {
-                transform.position = Vector3.Lerp(startPos, target, t * 100);
+                transform.position = Vector3.Lerp(startPos, target, t * 5);
                 yield return null;
             }
         }
         Vector3 startPos2 = transform.position;
         for (float t = 0; t < 0.01f; t += Time.deltaTime)
         {
-            transform.position = Vector3.Lerp(startPos2, originPos, t * 100);
+            transform.position = Vector3.Lerp(startPos2, originPos, t * 5);
             yield return null;
         }
         isShaking = false;
