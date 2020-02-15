@@ -203,7 +203,7 @@ public class MenuManager : MonoBehaviour
     IEnumerator ChangeSceneAnim()
     {
         yield return blackPanel.ShowAnim();
-        SceneManager.LoadScene("Issa");
+        SceneManager.LoadScene("Stage"+(GameManager.selectedMap+1));
     }
 
     public void QuitGame()
