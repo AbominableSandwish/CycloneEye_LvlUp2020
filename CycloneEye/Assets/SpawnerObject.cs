@@ -14,7 +14,7 @@ public class SpawnerObject : MonoBehaviour
     {
         if (lastTimeToSpawn + timeToWait < Time.time)
         {
-            if (Random.Range(0, 100) < 10)
+            if (Random.Range(0, 100) < 20)
             {
                 lastTimeToSpawn = Time.time;
                 float x = Random.Range(-4.0f , 2.0f);
