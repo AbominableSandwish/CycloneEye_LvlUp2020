@@ -8,6 +8,7 @@ public class MenuManager : MonoBehaviour
 {
     [SerializeField] BlackPanel blackPanel;
     [SerializeField] GameObject[] menuCursors; 
+    [SerializeField] GameObject[] menuCursors2; 
     [SerializeField] GameObject[] settingsMenuCursors;
 
     [SerializeField] GameObject settingsPanel;
@@ -170,6 +171,7 @@ public class MenuManager : MonoBehaviour
         for(int i = 0; i < menuCursors.Length; i++)
         {
             menuCursors[i].GetComponent<Image>().enabled = (i == index);
+            menuCursors2[i].gameObject.SetActive(i == index);
         }
     }
     void UpdateSettingsCursors()

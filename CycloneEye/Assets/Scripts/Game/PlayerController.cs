@@ -99,62 +99,62 @@ public class PlayerController : MonoBehaviour
 
         if (GameManager.State != GameState.PLAYING || (state != PlayerState.NORMAL && state != PlayerState.GUARDING)) return;
 
-        //Vector3 movement = new Vector3(Input.GetAxis("Horizontal " + controllerId), 0, Input.GetAxis("Vertical " + controllerId)) * moveSpeed;
-        //if (charging) movement /= 2;
-        //if (guarding) movement *= 0;
-        //rBody.AddForce(movement);
-        //if (rBody.velocity.magnitude > moveSpeed)
-        //    rBody.velocity = rBody.velocity.normalized * moveSpeed;
+        Vector3 movement = new Vector3(Input.GetAxis("Horizontal " + controllerId), 0, Input.GetAxis("Vertical " + controllerId)) * moveSpeed;
+        if (charging) movement /= 2;
+        if (guarding) movement *= 0;
+        rBody.AddForce(movement);
+        if (rBody.velocity.magnitude > moveSpeed)
+            rBody.velocity = rBody.velocity.normalized * moveSpeed;
 
-        //if (!charging && !guarding)
-        //    anim.speed = movement.magnitude / moveSpeed;
-        //else
-        //    anim.speed = 1;
+        if (!charging && !guarding)
+            anim.speed = movement.magnitude / moveSpeed;
+        else
+            anim.speed = 1;
 
-        //if (movement.magnitude > 0)
-        //{
-        //    anim.SetBool("walking", true);
-        //    if (!charging && !guarding)
-        //        transform.LookAt(transform.position + movement);
-        //}
-        //else
-        //{
-        //    anim.SetBool("walking", false);
-        //}
+        if (movement.magnitude > 0)
+        {
+            anim.SetBool("walking", true);
+            if (!charging && !guarding)
+                transform.LookAt(transform.position + movement);
+        }
+        else
+        {
+            anim.SetBool("walking", false);
+        }
 
-        //if (!charging)
-        //{
-        //    if (Input.GetButtonDown("Guard " + controllerId))
-        //    {
-        //        state = PlayerState.GUARDING;
-        //        guarding = true;
-        //        anim.SetBool("guarding", true);
-        //    }
-        //    if (Input.GetButtonUp("Guard " + controllerId) && guarding)
-        //    {
-        //        state = PlayerState.NORMAL;
-        //        guarding = false;
-        //        anim.SetBool("guarding", false);
-        //    }
-        //}
+        if (!charging)
+        {
+            if (Input.GetButtonDown("Guard " + controllerId))
+            {
+                state = PlayerState.GUARDING;
+                guarding = true;
+                anim.SetBool("guarding", true);
+            }
+            if (Input.GetButtonUp("Guard " + controllerId) && guarding)
+            {
+                state = PlayerState.NORMAL;
+                guarding = false;
+                anim.SetBool("guarding", false);
+            }
+        }
 
-        //if (!guarding)
-        //{
-        //    if (Input.GetButtonDown("Attack " + controllerId))
-        //    {
-        //        charging = true;
-        //        chargingAttack = 0;
-        //        anim.SetBool("charging", true);
-        //    }
-        //    if (Input.GetButton("Attack " + controllerId) && charging)
-        //    {
-        //        chargingAttack = Mathf.Min(1f, chargingAttack + Time.deltaTime);
-        //    }
-        //    if (Input.GetButtonUp("Attack " + controllerId) && charging)
-        //    {
-        //        StartCoroutine(AttackAnim());
-        //    }
-        //}
+        if (!guarding)
+        {
+            if (Input.GetButtonDown("Attack " + controllerId))
+            {
+                charging = true;
+                chargingAttack = 0;
+                anim.SetBool("charging", true);
+            }
+            if (Input.GetButton("Attack " + controllerId) && charging)
+            {
+                chargingAttack = Mathf.Min(1f, chargingAttack + Time.deltaTime);
+            }
+            if (Input.GetButtonUp("Attack " + controllerId) && charging)
+            {
+                StartCoroutine(AttackAnim());
+            }
+        }
     }
     IEnumerator ChargeAnim(Vector3 direction, float force, float stopDist)
     {
@@ -306,7 +306,7 @@ public class PlayerController : MonoBehaviour
             //rBody.AddForce(force);
             StartCoroutine(ChargeAnim(baseForce, modifier * damages / 50, 0f));
         }
-        damageText.text = ((int) damages).ToString("000");
+        damageText.text = ((int) damages).ToString("00");
         damageAnimator.SetTrigger("TakeDamage");
         return guarded;
     }
