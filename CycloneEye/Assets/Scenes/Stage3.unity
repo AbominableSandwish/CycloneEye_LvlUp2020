@@ -11525,8 +11525,8 @@ Transform:
   - {fileID: 1105246076}
   - {fileID: 1846369565}
   - {fileID: 910001115}
-  - {fileID: 293954905}
   - {fileID: 1703733118}
+  - {fileID: 293954905}
   - {fileID: 1808768044}
   - {fileID: 1256994528}
   - {fileID: 352868211}
@@ -14466,8 +14466,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &1972887797
-SphereCollider:
+--- !u!65 &1972887797
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -14477,7 +14477,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 5.3
+  m_Size: {x: 14, y: 10, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1978257216
 PrefabInstance:
