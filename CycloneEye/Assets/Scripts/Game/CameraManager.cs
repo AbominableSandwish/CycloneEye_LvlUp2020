@@ -11,6 +11,11 @@ public class CameraManager : MonoBehaviour
 
     [SerializeField] private int nbrPlayer = 0;
 
+
+    private List<Transform> players;
+    bool isShaking = false;
+
+
     void Start()
     {
         centerStage = transform.position - Vector3.up;
@@ -27,10 +32,6 @@ public class CameraManager : MonoBehaviour
         }
 
     }
-
-    private List<Transform> players;
-
-
     void FixedUpdate()
     {
         Vector3 average = PositionStageAverage();
@@ -126,7 +127,11 @@ public class CameraManager : MonoBehaviour
 
     void Chake()
     {
-        StartCoroutine(ChakeAnim());
+        if (!isShaking)
+        {
+            isShaking = true;
+            StartCoroutine(ChakeAnim());
+        }
     }
 
     IEnumerator ChakeAnim()
@@ -148,6 +153,7 @@ public class CameraManager : MonoBehaviour
             transform.position = Vector3.Lerp(startPos2, originPos, t * 100);
             yield return null;
         }
+        isShaking = false;
     }
 
     //void OnDrawGizmos()
