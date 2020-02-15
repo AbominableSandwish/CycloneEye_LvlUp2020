@@ -16,18 +16,28 @@ public class MotherFuckingAudioManager : MonoBehaviour
         NONE,
         MAIN,
         MENU,
-        OVER
+        SCORE
     }
 
     public enum SoundList
     {
         PLAYER_FALL,
-        WIND
+        WIND,
+        WOOSH,
+        HIT,
+        WALL_DESTROYED,
+        PARADE
     }
 
     public enum AlertList
     {
-        BTN_VALIDATION
+        BTN_VALIDATION,
+        GOLD_HAMMER,
+        POINT_LVL1,
+        POINT_LVL2,
+        POINT_LVL3,
+        EXIT_GAME
+
     }
 
     MusicList currentMusicPlaying = MusicList.NONE;
@@ -39,12 +49,22 @@ public class MotherFuckingAudioManager : MonoBehaviour
     [Header("Music")]
     [SerializeField] private AudioClip mainMusic;
     [SerializeField] private AudioClip menuMusic;
-    [SerializeField] private AudioClip gameOver;
+    [SerializeField] private AudioClip ScoreMusic;
     [Header("Sound")]
     [SerializeField] private AudioClip playeFall;
     [SerializeField] private AudioClip Wind;
+    [SerializeField] private AudioClip[] hits;
+    [SerializeField] private AudioClip[] wooshs;
+    [SerializeField] private AudioClip parade;
+
     [Header("Alert")]
     [SerializeField] private AudioClip ButtonValidation;
+
+    [SerializeField] private AudioClip Winner;
+    [SerializeField] private AudioClip PointLvl1;
+    [SerializeField] private AudioClip PointLvl2;
+    [SerializeField] private AudioClip PointLvl3;
+    [SerializeField] private AudioClip ExitGame;
 
     public void StopAllSound()
     {
@@ -60,6 +80,22 @@ public class MotherFuckingAudioManager : MonoBehaviour
             }
         }
     }
+
+    public void StopAllMusic()
+    {
+        foreach (AudioSource emitter in musicEmitters)
+        {
+            if (emitter.isPlaying)
+            {
+                if (emitter.outputAudioMixerGroup == AudioConfig.Instance.music)
+                {
+                    emitter.Stop();
+                    emitter.clip = null;
+                }
+            }
+        }
+    }
+
 
     private void Awake()
     {
@@ -91,6 +127,7 @@ public class MotherFuckingAudioManager : MonoBehaviour
             if (!emitter.isPlaying)
             {
                 emitterAvailable = emitter;
+                emitterAvailable.volume = 1.0f;
                 break;
             }
         }
@@ -103,6 +140,27 @@ public class MotherFuckingAudioManager : MonoBehaviour
             {
                 case AlertList.BTN_VALIDATION:
                     emitterAvailable.clip = ButtonValidation;
+                    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.alert;
+                    break;
+                case AlertList.GOLD_HAMMER:
+                    emitterAvailable.volume = 0.8f;
+                    emitterAvailable.clip = Winner;
+                    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.alert;
+                    break;
+                case AlertList.POINT_LVL1:
+                    emitterAvailable.clip = PointLvl1;
+                    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.alert;
+                    break;
+                case AlertList.POINT_LVL2:
+                    emitterAvailable.clip = PointLvl2;
+                    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.alert;
+                    break;
+                case AlertList.POINT_LVL3:
+                    emitterAvailable.clip = PointLvl3;
+                    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.alert;
+                    break;
+                case AlertList.EXIT_GAME:
+                    emitterAvailable.clip = ExitGame;
                     emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.alert;
                     break;
             }
@@ -139,7 +197,24 @@ public class MotherFuckingAudioManager : MonoBehaviour
                     emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.sound;
                     break;
                 case SoundList.WIND:
+                    emitterAvailable.volume = 0.5f;
                     emitterAvailable.clip = Wind;
+                    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.sound;
+                    break;
+                case SoundList.WOOSH:
+                    emitterAvailable.clip = wooshs[Random.Range(0, hits.Length)];
+                    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.sound;
+                    break;
+                case SoundList.HIT:
+                    emitterAvailable.clip = hits[Random.Range(0, hits.Length)];
+                    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.sound;
+                    break;
+                case SoundList.WALL_DESTROYED:
+                    emitterAvailable.clip = Wind;
+                    emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.sound;
+                    break;
+                case SoundList.PARADE:
+                    emitterAvailable.clip = parade;
                     emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.sound;
                     break;
             }
@@ -185,8 +260,10 @@ public class MotherFuckingAudioManager : MonoBehaviour
                         emitterAvailable.clip = menuMusic;
                         emitterAvailable.Play();
                         break;
-                    case MusicList.OVER:
-                        emitterAvailable.clip = gameOver;
+                    case MusicList.SCORE:
+                        emitterAvailable.volume = 0.4f;
+                        emitterAvailable.loop =  false;
+                        emitterAvailable.clip = ScoreMusic;
                         emitterAvailable.Play();
                         break;
                 }
@@ -219,7 +296,7 @@ public class MotherFuckingAudioManager : MonoBehaviour
     {
         float volumeIn;
         float volumeOut;
-        for (float ft = 0f; ft <= 10f; ft += 0.3f)
+        for (float ft = 0f; ft <= 10f; ft += 0.5f)
         {
             volumeIn = ft/10f;
             volumeOut = (10f - ft)/10f;
@@ -234,5 +311,13 @@ public class MotherFuckingAudioManager : MonoBehaviour
         emitterOut.volume = 0f;
         emitterOut.Stop();
         emitterOut.clip = null;
+    }
+
+
+
+    public void SetVolumeMusic(float volume, bool fade = false)
+    {
+        musicEmitters[0].volume = volume;
+        musicEmitters[1].volume = volume;
     }
 }

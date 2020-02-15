@@ -24,6 +24,7 @@ public class AudioConfig : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioMixer MixerAudio;
 
+    [SerializeField] public AudioMixerGroup music;
     [SerializeField] public AudioMixerGroup sound;
     [SerializeField] public AudioMixerGroup alert;
 

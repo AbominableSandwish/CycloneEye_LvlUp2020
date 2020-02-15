@@ -156,6 +156,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
     IEnumerator ChargeAnim(Vector3 direction, float force, float stopDist)
     {
         direction = new Vector3(direction.x, 0, direction.z);
@@ -212,12 +213,15 @@ public class PlayerController : MonoBehaviour
         Vector3 direction = Vector3.zero;
         Collider[] colls = Physics.OverlapBox(transform.position + transform.forward * 0.2f + transform.right * 0.1f, new Vector3(.5f, .5f, .5f), transform.rotation);
         bool blocked = false;
+        bool hitplayer = false;
         foreach (Collider coll in colls)
         {
             if (coll.tag == "Player" && coll.gameObject != this.gameObject)
             {
+                hitplayer = true;
                 direction = (coll.transform.position - transform.position).normalized;
                 blocked = blocked || coll.GetComponent<PlayerController>().Push(direction, chargingAttack*damage, index);
+
             }
         }
         charging = false;
@@ -226,8 +230,20 @@ public class PlayerController : MonoBehaviour
 
         if (blocked)
         {
+            audioManager.PlaySound(MotherFuckingAudioManager.SoundList.PARADE);
             StartCoroutine(CounterMalusEmplification());
             StartCoroutine(ChargeAnim(-direction, 1f, 0f));
+        }
+        else
+        {
+            if (!hitplayer)
+            {
+                audioManager.PlaySound(MotherFuckingAudioManager.SoundList.WOOSH);
+            }
+            else
+            {
+                audioManager.PlaySound(MotherFuckingAudioManager.SoundList.HIT);
+            }
         }
     }
 
@@ -307,6 +323,7 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(ChargeAnim(baseForce, modifier * damages / 50, 0f));
         }
         damageText.text = ((int) damages).ToString("00");
+
         damageAnimator.SetTrigger("TakeDamage");
         return guarded;
     }
@@ -409,6 +426,7 @@ public class PlayerController : MonoBehaviour
         else
         scoreAnimator.SetTrigger("score_down");
     }
+
 
 
 }
