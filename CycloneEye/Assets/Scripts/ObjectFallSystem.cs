@@ -70,7 +70,7 @@ public class ObjectFallSystem : MonoBehaviour
     }
         if (rdm > 5 && rdm <= 25)
         {
-            GetComponent<SpriteRenderer>().sprite = images[4];
+            GetComponent<SpriteRenderer>().sprite = images[3];
         }
         if (rdm > 25 && rdm <= 50)
         {
