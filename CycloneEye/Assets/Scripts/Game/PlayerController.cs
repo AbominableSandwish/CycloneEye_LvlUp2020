@@ -157,7 +157,7 @@ public class PlayerController : MonoBehaviour
         direction = new Vector3(direction.x, 0, direction.z);
         RaycastHit hit;
         Vector3 EndPoint;
-        if (Physics.SphereCast(transform.position, 0.3f, direction, out hit, force))
+        if (Physics.Raycast(transform.position, direction, out hit, force))
         {
             EndPoint = hit.point - direction * stopDist;
         } else
@@ -167,7 +167,7 @@ public class PlayerController : MonoBehaviour
         Vector3 startPos = transform.position;
         for(float t = 0; t <= 0.1f; t += Time.deltaTime)
         {
-            if (Physics.SphereCast(transform.position, 0.3f, direction, out hit, force))
+            if (Physics.Raycast(transform.position, direction, out hit, force))
             {
                 EndPoint = hit.point - direction * stopDist;
             }

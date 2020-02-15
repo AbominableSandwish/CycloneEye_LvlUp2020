@@ -40,6 +40,7 @@ public class MenuManager : MonoBehaviour
 
     }
 
+    bool firstTimer = true;
     private void Update()
     {
         if (!gamePanel.activeSelf && !settingsPanel.activeSelf && menuActif)
@@ -47,13 +48,15 @@ public class MenuManager : MonoBehaviour
             timer -= Time.deltaTime;
             if (Input.GetAxisRaw("Vertical") > 0 && index > 0 && timer <= 0)
             {
-                timer = 0.5f;
+                timer = (firstTimer)?0.5f:0.1f;
+                firstTimer = false;
                 index--;
                 UpdateCursors();
             }
             else if (Input.GetAxisRaw("Vertical") < 0 && index < menuCursors.Length - 1 && timer <= 0)
             {
-                timer = 0.5f;
+                timer = (firstTimer) ? 0.5f : 0.1f;
+                firstTimer = false;
                 index++;
                 UpdateCursors();
             }
@@ -64,19 +67,22 @@ public class MenuManager : MonoBehaviour
             else if (Input.GetAxisRaw("Vertical") == 0)
             {
                 timer = 0;
+                firstTimer = true;
             }
         } else if (settingsPanel.gameObject.activeSelf)
         {
             timer -= Time.deltaTime;
             if (Input.GetAxisRaw("Vertical") > 0 && settingsIndex > 0 && timer <= 0)
             {
-                timer = 0.5f;
+                timer = (firstTimer) ? 0.5f : 0.1f;
+                firstTimer = false;
                 settingsIndex--;
                 UpdateSettingsCursors();
             }
             else if (Input.GetAxisRaw("Vertical") < 0 && settingsIndex < 4 && timer <= 0)
             {
-                timer = 0.5f;
+                timer = (firstTimer) ? 0.5f : 0.1f;
+                firstTimer = false;
                 settingsIndex++;
                 UpdateSettingsCursors();
             }
@@ -88,23 +94,26 @@ public class MenuManager : MonoBehaviour
             else
             {
                 if (Input.GetAxisRaw("Vertical") == 0)
+                {
                     timer = 0;
+                    firstTimer = true;
+                }
                 switch (settingsIndex)
                 {
                     case 0:
-                        TryChangeSliderValue(numberTurnSlider);
+                        TryChangeSliderValue(numberTurnSlider, 0.1f);
                         break;
                     case 1:
-                        TryChangeSliderValue(timerSlider);
+                        TryChangeSliderValue(timerSlider, 0.1f);
                         break;
                     case 2:
-                        TryChangeSliderValue(audioSliders[0]);
+                        TryChangeSliderValue(audioSliders[0], 0.01f);
                         break;
                     case 3:
-                        TryChangeSliderValue(audioSliders[1]);
+                        TryChangeSliderValue(audioSliders[1], 0.01f);
                         break;
                     case 4:
-                        TryChangeSliderValue(audioSliders[2]);
+                        TryChangeSliderValue(audioSliders[2], 0.01f);
                         break;
                 }
             }
@@ -133,22 +142,26 @@ public class MenuManager : MonoBehaviour
         }
     }
     float timerH = 0;
-    void TryChangeSliderValue(Slider s)
+    bool firstTimerH = true;
+    void TryChangeSliderValue(Slider s, float delay)
     {
         timerH -= Time.deltaTime;
         if (Input.GetAxisRaw("Horizontal") < 0 && s.value > s.minValue && timerH <= 0)
         {
-            timerH = 0.5f;
+            timerH = (firstTimerH) ? 0.5f : delay;
+            firstTimerH = false;
             s.value--;
         }
         else if (Input.GetAxisRaw("Horizontal") > 0 && s.value < s.maxValue && timerH <= 0)
         {
-            timerH = 0.5f;
+            timerH = (firstTimerH) ? 0.5f : delay;
+            firstTimerH = false;
             s.value++;
         }
         else if (Input.GetAxisRaw("Horizontal") == 0)
         {
             timerH = 0;
+            firstTimerH = true;
         }
     }
 
