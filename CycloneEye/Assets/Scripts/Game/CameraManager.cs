@@ -150,78 +150,78 @@ public class CameraManager : MonoBehaviour
         }
     }
 
-    void OnDrawGizmos()
-    {
-        // Draw a yellow sphere at the transform's position
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(centerStage, 0.15f);
-        if (players != null)
-        {
-            int i = 0;
-            Vector3[] lerpPosition;
-                lerpPosition = new Vector3[players.Count];
+    //void OnDrawGizmos()
+    //{
+    //    // Draw a yellow sphere at the transform's position
+    //    Gizmos.color = Color.cyan;
+    //    Gizmos.DrawSphere(centerStage, 0.15f);
+    //    if (players != null)
+    //    {
+    //        int i = 0;
+    //        Vector3[] lerpPosition;
+    //            lerpPosition = new Vector3[players.Count];
 
 
-                foreach (var player in this.players)
-                {
-                    Gizmos.color = Color.green;
-                    Gizmos.DrawSphere(player.position, 0.15f);
-                    Gizmos.color = Color.white;
-                    Gizmos.DrawLine(centerStage, player.position);
-                    Gizmos.color = Color.yellow;
-                    Gizmos.DrawSphere(Vector3.Lerp(centerStage, player.position, 0.5f), 0.15f);
-                    lerpPosition[i] = Vector3.Lerp(centerStage, player.position, 0.5f);
-                    i++;
-                }
+    //            foreach (var player in this.players)
+    //            {
+    //                Gizmos.color = Color.green;
+    //                Gizmos.DrawSphere(player.position, 0.15f);
+    //                Gizmos.color = Color.white;
+    //                Gizmos.DrawLine(centerStage, player.position);
+    //                Gizmos.color = Color.yellow;
+    //                Gizmos.DrawSphere(Vector3.Lerp(centerStage, player.position, 0.5f), 0.15f);
+    //                lerpPosition[i] = Vector3.Lerp(centerStage, player.position, 0.5f);
+    //                i++;
+    //            }
 
-            if (lerpPosition.Length == 2)
-            {
-                Gizmos.color = Color.white;
-                Gizmos.DrawLine(lerpPosition[0], lerpPosition[1]);
-                Gizmos.color = Color.magenta;
-                Gizmos.DrawSphere(Vector3.Lerp(lerpPosition[0], lerpPosition[1], 0.5f),0.15f);
-            }
-            if (lerpPosition.Length == 3)
-            {
-                Vector3[] lerpPosition2 = new Vector3[2];
+    //        if (lerpPosition.Length == 2)
+    //        {
+    //            Gizmos.color = Color.white;
+    //            Gizmos.DrawLine(lerpPosition[0], lerpPosition[1]);
+    //            Gizmos.color = Color.magenta;
+    //            Gizmos.DrawSphere(Vector3.Lerp(lerpPosition[0], lerpPosition[1], 0.5f),0.15f);
+    //        }
+    //        if (lerpPosition.Length == 3)
+    //        {
+    //            Vector3[] lerpPosition2 = new Vector3[2];
 
-                Gizmos.color = Color.white;
-                Gizmos.DrawLine(lerpPosition[0], lerpPosition[1]);
-                Gizmos.color = Color.red;
-                lerpPosition2[0] = Vector3.Lerp(lerpPosition[0], lerpPosition[1], 0.5f);
-                Gizmos.DrawSphere(lerpPosition2[0], 0.15f);
-                Gizmos.color = Color.white;
-                Gizmos.DrawLine(lerpPosition[1], lerpPosition[2]);
-                Gizmos.color = Color.red;
-                lerpPosition2[1] = Vector3.Lerp(lerpPosition[1], lerpPosition[2], 0.5f);
-                Gizmos.DrawSphere(lerpPosition2[1], 0.15f);
+    //            Gizmos.color = Color.white;
+    //            Gizmos.DrawLine(lerpPosition[0], lerpPosition[1]);
+    //            Gizmos.color = Color.red;
+    //            lerpPosition2[0] = Vector3.Lerp(lerpPosition[0], lerpPosition[1], 0.5f);
+    //            Gizmos.DrawSphere(lerpPosition2[0], 0.15f);
+    //            Gizmos.color = Color.white;
+    //            Gizmos.DrawLine(lerpPosition[1], lerpPosition[2]);
+    //            Gizmos.color = Color.red;
+    //            lerpPosition2[1] = Vector3.Lerp(lerpPosition[1], lerpPosition[2], 0.5f);
+    //            Gizmos.DrawSphere(lerpPosition2[1], 0.15f);
 
-                Gizmos.color = Color.white;
-                Gizmos.DrawLine(lerpPosition2[0], lerpPosition2[1]);
-                Gizmos.color = Color.magenta;
-                Vector3 center= Vector3.Lerp(lerpPosition2[0], lerpPosition2[1], 0.5f);
-                Gizmos.DrawSphere(center, 0.15f);
-            }
-            if (lerpPosition.Length == 4)
-            {
-                Vector3[] lerpPosition2 = new Vector3[2];
+    //            Gizmos.color = Color.white;
+    //            Gizmos.DrawLine(lerpPosition2[0], lerpPosition2[1]);
+    //            Gizmos.color = Color.magenta;
+    //            Vector3 center= Vector3.Lerp(lerpPosition2[0], lerpPosition2[1], 0.5f);
+    //            Gizmos.DrawSphere(center, 0.15f);
+    //        }
+    //        if (lerpPosition.Length == 4)
+    //        {
+    //            Vector3[] lerpPosition2 = new Vector3[2];
 
-                Gizmos.color = Color.white;
-                Gizmos.DrawLine(lerpPosition[0], lerpPosition[2]);
-                Gizmos.color = Color.red;
-                lerpPosition2[0] = Vector3.Lerp(lerpPosition[0], lerpPosition[2], 0.5f);
-                Gizmos.DrawSphere(lerpPosition2[0], 0.15f);
-                Gizmos.color = Color.white;
-                Gizmos.DrawLine(lerpPosition[1], lerpPosition[3]);
-                Gizmos.color = Color.red;
-                lerpPosition2[1] = Vector3.Lerp(lerpPosition[1], lerpPosition[3], 0.5f);
-                Gizmos.DrawSphere(lerpPosition2[1], 0.15f);
-                Gizmos.color = Color.white;
-                Gizmos.DrawLine(lerpPosition2[0], lerpPosition2[1]);
-                Gizmos.color = Color.magenta;
-                Gizmos.DrawSphere(Vector3.Lerp(lerpPosition2[0], lerpPosition2[1], 0.5f), 0.15f);
-            }
-        }
+    //            Gizmos.color = Color.white;
+    //            Gizmos.DrawLine(lerpPosition[0], lerpPosition[2]);
+    //            Gizmos.color = Color.red;
+    //            lerpPosition2[0] = Vector3.Lerp(lerpPosition[0], lerpPosition[2], 0.5f);
+    //            Gizmos.DrawSphere(lerpPosition2[0], 0.15f);
+    //            Gizmos.color = Color.white;
+    //            Gizmos.DrawLine(lerpPosition[1], lerpPosition[3]);
+    //            Gizmos.color = Color.red;
+    //            lerpPosition2[1] = Vector3.Lerp(lerpPosition[1], lerpPosition[3], 0.5f);
+    //            Gizmos.DrawSphere(lerpPosition2[1], 0.15f);
+    //            Gizmos.color = Color.white;
+    //            Gizmos.DrawLine(lerpPosition2[0], lerpPosition2[1]);
+    //            Gizmos.color = Color.magenta;
+    //            Gizmos.DrawSphere(Vector3.Lerp(lerpPosition2[0], lerpPosition2[1], 0.5f), 0.15f);
+    //        }
+    //    }
               
-        }
+    //    }
     }

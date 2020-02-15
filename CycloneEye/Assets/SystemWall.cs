@@ -31,6 +31,8 @@ public class SystemWall : MonoBehaviour
 
     public void DestroyWall()
     {
-        Destroy(this.gameObject);
+        GetComponents<BoxCollider>()[0].enabled = false;
+        GetComponents<BoxCollider>()[1].enabled = false;
+        //Destroy(this.gameObject);
     }
 }
