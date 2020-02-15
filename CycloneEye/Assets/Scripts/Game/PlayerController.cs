@@ -306,7 +306,7 @@ public class PlayerController : MonoBehaviour
             //rBody.AddForce(force);
             StartCoroutine(ChargeAnim(baseForce, modifier * damages / 50, 0f));
         }
-        damageText.text = ((int) damages).ToString("000");
+        damageText.text = ((int) damages).ToString("00");
         damageAnimator.SetTrigger("TakeDamage");
         return guarded;
     }
