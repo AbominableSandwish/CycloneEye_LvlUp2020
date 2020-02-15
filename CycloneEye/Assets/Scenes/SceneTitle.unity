@@ -10798,12 +10798,25 @@ MonoBehaviour:
   musicEmitters:
   - {fileID: 1843529413}
   - {fileID: 1843529414}
-  mainMusic: {fileID: 8300000, guid: 47ce0d43027fd214fb9fa3e455703d87, type: 3}
-  menuMusic: {fileID: 8300000, guid: dee351f54dede0940bac8612a1bf5ae9, type: 3}
-  gameOver: {fileID: 0}
+  mainMusic: {fileID: 8300000, guid: c7d6788c3a3d7e44f92647bda888aeaf, type: 3}
+  menuMusic: {fileID: 8300000, guid: 47ce0d43027fd214fb9fa3e455703d87, type: 3}
+  ScoreMusic: {fileID: 8300000, guid: 5be648e6ce3313e43bb0e5610c9d45c7, type: 3}
   playeFall: {fileID: 8300000, guid: 7a97923409e3b0a49a3a2926b897f849, type: 3}
   Wind: {fileID: 8300000, guid: d97c8da46f15a7b4b942ed10b1c4837e, type: 3}
+  hits:
+  - {fileID: 8300000, guid: 58ce3beea2824504099a1e07a0d45fae, type: 3}
+  - {fileID: 8300000, guid: 8ea285cb7b544924b94cdbd60b80bc82, type: 3}
+  wooshs:
+  - {fileID: 8300000, guid: 822db3b0f13f2654b8fe4e38d9e8ff8d, type: 3}
+  - {fileID: 8300000, guid: 41cc750211699fe41936c17b08276cfb, type: 3}
+  - {fileID: 8300000, guid: ff8754925d39eff47b627225a2af0a0c, type: 3}
+  parade: {fileID: 0}
   ButtonValidation: {fileID: 8300000, guid: 09cf70bf118cc884b932e4b422944c21, type: 3}
+  Winner: {fileID: 8300000, guid: 0fba6c3e5ab5ab14c801cecb4b448173, type: 3}
+  PointLvl1: {fileID: 8300000, guid: 896d5149143250a4793137718c19b4e1, type: 3}
+  PointLvl2: {fileID: 8300000, guid: df7f33f709e486041b3b94fb9e9b3cb5, type: 3}
+  PointLvl3: {fileID: 8300000, guid: 36deee0e78d7d4642a99056847a51f0b, type: 3}
+  ExitGame: {fileID: 8300000, guid: fab170b3cbf956f46a6a26227c85419a, type: 3}
 --- !u!82 &1843529413
 AudioSource:
   m_ObjectHideFlags: 0
@@ -11015,6 +11028,7 @@ MonoBehaviour:
   SoundSlider: {fileID: 213506334}
   AlertSlider: {fileID: 1745487644}
   MixerAudio: {fileID: 24100000, guid: c7d43ce963de5e8488d9fae26d0de877, type: 2}
+  music: {fileID: 0}
   sound: {fileID: 4643734431723973008, guid: c7d43ce963de5e8488d9fae26d0de877, type: 2}
   alert: {fileID: 2047899773108933645, guid: c7d43ce963de5e8488d9fae26d0de877, type: 2}
 --- !u!1 &1849534470
