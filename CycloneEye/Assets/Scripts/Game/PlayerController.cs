@@ -177,6 +177,14 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         transform.position = EndPoint;
+        /*
+        float remainingDist = Mathf.Abs(force - Vector3.Distance(transform.position, startPos));
+        if (remainingDist > 1f)
+        {
+            Vector3 bounced = -direction;
+            yield return StartCoroutine(ChargeAnim(bounced, remainingDist, stopDist));
+        }
+        */
     }
 
     IEnumerator AttackAnim()

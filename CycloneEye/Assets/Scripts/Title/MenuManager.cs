@@ -182,8 +182,6 @@ public class MenuManager : MonoBehaviour
 
     public void Play()
     {
-        audioManager.PlayAlert(MotherFuckingAudioManager.AlertList.BTN_VALIDATION);
-        audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.MAIN, true);
         int counter = 0;
         for (int j = 0; j < 4; j++)
         {
@@ -193,7 +191,11 @@ public class MenuManager : MonoBehaviour
             }
         }
         if(counter > 1)
+        {
+            audioManager.PlayAlert(MotherFuckingAudioManager.AlertList.BTN_VALIDATION);
+            audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.MAIN, true);
             StartCoroutine(ChangeSceneAnim());
+        }
     }
 
     IEnumerator ChangeSceneAnim()
