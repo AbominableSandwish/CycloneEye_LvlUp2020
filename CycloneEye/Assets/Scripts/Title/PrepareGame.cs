@@ -10,10 +10,13 @@ public class PrepareGame : MonoBehaviour
     [SerializeField] GameObject notEnoughtPlayer;
     [SerializeField] GameObject pressStartToPlay;
     [SerializeField] MenuManager menuManager;
+    private MotherFuckingAudioManager audioManager;
+
     // Start is called before the first frame update
     void Start()
     {
-        for(int i = 0; i < 4; i++)
+        audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
+        for (int i = 0; i < 4; i++)
             GameManager.playerOrder[i] = -1;
     }
 
@@ -58,7 +61,11 @@ public class PrepareGame : MonoBehaviour
                         playerOff[j].SetActive(true);
                     }
                 }
-                if (!ok) gameObject.SetActive(false);
+                if (!ok)
+                {
+                    audioManager.PlayAlert(MotherFuckingAudioManager.AlertList.BTN_VALIDATION);
+                    gameObject.SetActive(false);
+                }
             }
         }
 
