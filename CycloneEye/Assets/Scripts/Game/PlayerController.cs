@@ -304,7 +304,7 @@ public class PlayerController : MonoBehaviour
             // if (force.magnitude > 3000)
             //     force = force.normalized * 3000;
             //rBody.AddForce(force);
-            StartCoroutine(ChargeAnim(baseForce, modifier * damages / 30, 0f));
+            StartCoroutine(ChargeAnim(baseForce, modifier * damages / 50, 0f));
         }
         damageText.text = ((int) damages).ToString("000");
         damageAnimator.SetTrigger("TakeDamage");
