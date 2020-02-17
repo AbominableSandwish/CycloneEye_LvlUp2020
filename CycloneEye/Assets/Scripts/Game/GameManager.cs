@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     public static int selectedMap = 0;
     static int roundCount = 1;
 
-    public static int[] playerOrder = new int[4] { 0,1,2,3 };
+    public static int[] playerOrder = new int[4] {0, 1, 2, 3};
 
     [SerializeField] List<PlayerController> players;
     [SerializeField] List<GameObject> playerDamages;
@@ -31,9 +31,21 @@ public class GameManager : MonoBehaviour
     List<PlayerController> eliminationOrder;
     int isPaused;
     GameState state;
-    public static GameState State { get { return Instance.state; } }
-    public static int PauseIndex { get { return Instance.isPaused; } }
-    public static int Round { get { return roundCount; } }
+
+    public static GameState State
+    {
+        get { return Instance.state; }
+    }
+
+    public static int PauseIndex
+    {
+        get { return Instance.isPaused; }
+    }
+
+    public static int Round
+    {
+        get { return roundCount; }
+    }
 
     private float TimeRound = startTime;
     private Text timerText;
@@ -43,7 +55,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        
+
         TimeRound = startTime;
         if (roundCount == 1)
             ScoreManager.InitScores();
@@ -53,9 +65,10 @@ public class GameManager : MonoBehaviour
             players[i].eliminated = playerOrder[i] == -1;
             players[i].gameObject.SetActive(!players[i].eliminated);
             playerDamages[i].gameObject.SetActive(!players[i].eliminated);
-            if(!players[i].eliminated)
+            if (!players[i].eliminated)
                 playerCount++;
         }
+
         blackPanel.Hide();
         state = GameState.INITIALIZE;
         startScreen.SetActive(true);
@@ -64,12 +77,12 @@ public class GameManager : MonoBehaviour
         eliminationOrder = new List<PlayerController>();
         StartCoroutine(ReadyStartAnim());
         timerText = GameObject.Find("TextTimer").GetComponent<Text>();
-        int min = (int)(TimeRound / 60.0f);
-        int sec = (int)(TimeRound - (min * 60));
-        timerText.text = "0"+ min + ":" + sec + "0";
+        int min = (int) (TimeRound / 60.0f);
+        int sec = (int) (TimeRound - (min * 60));
+        timerText.text = "0" + min + ":" + sec + "0";
         camera = Camera.main.GetComponent<CameraManager>();
         audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
-       
+
     }
 
     void Start()
@@ -86,11 +99,12 @@ public class GameManager : MonoBehaviour
             TimeRound -= Time.deltaTime;
             int min = (int) (TimeRound / 60.0f);
             int sec = (int) (TimeRound - (min * 60));
-            if(TimeRound <= 0)
+            if (TimeRound <= 0)
             {
                 TimeRound = 0;
                 EndTime();
             }
+
             timerText.text = min.ToString("00") + ":" + sec.ToString("00");
         }
     }
@@ -136,14 +150,16 @@ public class GameManager : MonoBehaviour
                 }
 
             }
+
             endScreen.SetActive(true);
             yield return new WaitForSeconds(2f);
             yield return blackPanel.ShowAnim();
 
             if (roundCount == maxRund)
             {
+                audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.SCORE, true);
                 roundCount = 1;
-                SceneManager.LoadScene("SceneScore");
+                StartCoroutine(EndGame());
             }
             else
             {
@@ -157,13 +173,15 @@ public class GameManager : MonoBehaviour
     {
         if (isPaused == playerIdx && state == GameState.PAUSED)
         {
+            audioManager.SetVolumeMusic(1.0f, true);
             isPaused = -1;
             state = GameState.PLAYING;
             Time.timeScale = 1;
             pauseScreen.SetActive(false);
         }
-        else if(isPaused == -1 && state == GameState.PLAYING)
+        else if (isPaused == -1 && state == GameState.PLAYING)
         {
+            audioManager.SetVolumeMusic(0.1f, true);
             isPaused = playerIdx;
             state = GameState.PAUSED;
 
@@ -186,26 +204,31 @@ public class GameManager : MonoBehaviour
             audioManager.PlaySound(MotherFuckingAudioManager.SoundList.PLAYER_FALL);
             if (player.pusher == -1)
             {
-                ScoreManager.eliminations[player.Index-1]--;
+                ScoreManager.eliminations[player.Index - 1]--;
                 player.ChangePointsAnim(-1);
             }
             else
             {
-                ScoreManager.eliminations[player.pusher-1]++;
-                players[player.pusher-1].ChangePointsAnim(+1);
+                ScoreManager.eliminations[player.pusher - 1]++;
+                players[player.pusher - 1].ChangePointsAnim(+1);
             }
-           //endScreen.SetActive(true);
-           // state = GameState.END;
+
+            //endScreen.SetActive(true);
+            // state = GameState.END;
             RemovePlayer(player);
         }
     }
+
     public static void Quit()
     {
+        Instance.audioManager.PlayAlert(MotherFuckingAudioManager.AlertList.EXIT_GAME);
+        Instance.audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.MENU, true);
         Time.timeScale = 1;
         Instance.StartCoroutine(Instance.QuitGame());
     }
+
     IEnumerator QuitGame()
-    {
+    {       
         roundCount = 1;
         state = GameState.END;
         yield return new WaitForSeconds(1f);
@@ -213,5 +236,10 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("SceneTitle");
     }
 
-
+    IEnumerator EndGame()
+    {
+        print("FUCK");
+        yield return new WaitForSeconds(6.0f);
+        SceneManager.LoadScene("SceneScore");
+    }
 }

@@ -13,6 +13,7 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] GameObject settingsPanel;
     [SerializeField] GameObject gamePanel;
+    [SerializeField] GameObject creditPanel;
 
     [SerializeField] Slider numberTurnSlider;
     [SerializeField] Slider timerSlider;
@@ -44,12 +45,12 @@ public class MenuManager : MonoBehaviour
     bool firstTimer = true;
     private void Update()
     {
-        if (!gamePanel.activeSelf && !settingsPanel.activeSelf && menuActif)
+        if (!gamePanel.activeSelf && !settingsPanel.activeSelf && !creditPanel.activeSelf && menuActif)
         {
             timer -= Time.deltaTime;
             if (Input.GetAxisRaw("Vertical") > 0 && index > 0 && timer <= 0)
             {
-                timer = (firstTimer)?0.5f:0.1f;
+                timer = (firstTimer) ? 0.5f : 0.1f;
                 firstTimer = false;
                 index--;
                 UpdateCursors();
@@ -70,7 +71,16 @@ public class MenuManager : MonoBehaviour
                 timer = 0;
                 firstTimer = true;
             }
-        } else if (settingsPanel.gameObject.activeSelf)
+        }
+        else if (creditPanel.gameObject.activeSelf)
+        {
+            if (Input.GetButtonDown("Cancel"))
+            {
+                audioManager.PlayAlert(MotherFuckingAudioManager.AlertList.BTN_VALIDATION);
+                creditPanel.gameObject.SetActive(false);
+            }
+        }
+        else if (settingsPanel.gameObject.activeSelf)
         {
             timer -= Time.deltaTime;
             if (Input.GetAxisRaw("Vertical") > 0 && settingsIndex > 0 && timer <= 0)
@@ -87,7 +97,7 @@ public class MenuManager : MonoBehaviour
                 settingsIndex++;
                 UpdateSettingsCursors();
             }
-            else if(Input.GetButtonDown("Cancel"))
+            else if (Input.GetButtonDown("Cancel"))
             {
                 audioManager.PlayAlert(MotherFuckingAudioManager.AlertList.BTN_VALIDATION);
                 settingsPanel.gameObject.SetActive(false);
@@ -118,7 +128,7 @@ public class MenuManager : MonoBehaviour
                         break;
                 }
             }
-            
+
         }
     }
 
@@ -137,6 +147,9 @@ public class MenuManager : MonoBehaviour
                 settingsPanel.SetActive(true);
                 break;
             case 2:
+                creditPanel.SetActive(true);
+                break;
+            case 3:
                 menuActif = false;
                 QuitGame();
                 break;

@@ -13,9 +13,11 @@ public class Winners : MonoBehaviour
     [SerializeField] GameObject pressButtonToContinue;
     [SerializeField] BlackPanel BlackPanel;
 
+    private MotherFuckingAudioManager audioManager;
     // Start is called before the first frame update
     void Start()
     {
+        audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
         /*
         int counter = 0;
         for (int i = 0; i < 4; i++)
@@ -46,6 +48,7 @@ public class Winners : MonoBehaviour
 
     IEnumerator BackHome()
     {
+        audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.MENU, true);
         yield return BlackPanel.ShowAnim();
         SceneManager.LoadScene("SceneTitle");
     }
