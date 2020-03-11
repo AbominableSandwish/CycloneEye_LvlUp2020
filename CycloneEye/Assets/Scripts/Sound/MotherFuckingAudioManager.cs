@@ -262,7 +262,6 @@ public class MotherFuckingAudioManager : MonoBehaviour
                         break;
                     case MusicList.SCORE:
                         emitterAvailable.volume = 0.4f;
-                        emitterAvailable.loop =  false;
                         emitterAvailable.clip = ScoreMusic;
                         emitterAvailable.Play();
                         break;

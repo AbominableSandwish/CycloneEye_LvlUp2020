@@ -238,8 +238,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator EndGame()
     {
-        print("FUCK");
-        yield return new WaitForSeconds(6.0f);
+        yield return new WaitForSeconds(1.0f);
         SceneManager.LoadScene("SceneScore");
     }
 }

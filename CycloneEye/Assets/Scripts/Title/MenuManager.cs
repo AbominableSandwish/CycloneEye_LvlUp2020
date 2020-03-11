@@ -39,7 +39,7 @@ public class MenuManager : MonoBehaviour
         timerSlider.value = GameManager.startTime/30;
         initializing = false;
         audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.MENU);
-
+        GameManager.selectedMap = 0;
     }
 
     bool firstTimer = true;
@@ -48,6 +48,7 @@ public class MenuManager : MonoBehaviour
         if (!gamePanel.activeSelf && !settingsPanel.activeSelf && !creditPanel.activeSelf && menuActif)
         {
             timer -= Time.deltaTime;
+            Debug.Log("GamePad Input: X: " + Input.GetAxis("Horizontal") + "Y: " + Input.GetAxis("Vertical"));
             if (Input.GetAxisRaw("Vertical") > 0 && index > 0 && timer <= 0)
             {
                 timer = (firstTimer) ? 0.5f : 0.1f;
@@ -217,6 +218,7 @@ public class MenuManager : MonoBehaviour
     {
         yield return blackPanel.ShowAnim();
         SceneManager.LoadScene("Stage"+(GameManager.selectedMap+1));
+        //SceneManager.LoadScene("Stage1");
     }
 
     public void QuitGame()
