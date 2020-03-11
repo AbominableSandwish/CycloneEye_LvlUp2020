@@ -64,7 +64,7 @@ public class ObjectFallSystem : MonoBehaviour
         rot = transform.rotation;
         target = GameObject.Find("CoreCyclone").transform;
         int rdm = Random.Range(0, 75);
-        if (rdm <= 1)
+        if (rdm <= 5)
         {
             GetComponent<SpriteRenderer>().sprite = images[2];
         }
