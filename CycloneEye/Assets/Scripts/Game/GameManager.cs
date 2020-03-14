@@ -81,13 +81,15 @@ public class GameManager : MonoBehaviour
         int sec = (int) (TimeRound - (min * 60));
         timerText.text = "0" + min + ":" + sec + "0";
         camera = Camera.main.GetComponent<CameraManager>();
-        audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
+        if(GameObject.Find("AudioManager") != null)
+            audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
 
     }
 
     void Start()
     {
-        audioManager.PlaySound(MotherFuckingAudioManager.SoundList.WIND, true);
+        if(audioManager != null)
+            audioManager.PlaySound(MotherFuckingAudioManager.SoundList.WIND, true);
     }
 
     // Update is called once per frame
@@ -157,7 +159,8 @@ public class GameManager : MonoBehaviour
 
             if (roundCount == maxRund)
             {
-                audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.SCORE, true);
+                if (audioManager != null)
+                    audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.SCORE, true);
                 roundCount = 1;
                 StartCoroutine(EndGame());
             }
@@ -173,7 +176,8 @@ public class GameManager : MonoBehaviour
     {
         if (isPaused == playerIdx && state == GameState.PAUSED)
         {
-            audioManager.SetVolumeMusic(1.0f, true);
+            if (audioManager != null)
+                audioManager.SetVolumeMusic(1.0f, true);
             isPaused = -1;
             state = GameState.PLAYING;
             Time.timeScale = 1;
@@ -181,7 +185,8 @@ public class GameManager : MonoBehaviour
         }
         else if (isPaused == -1 && state == GameState.PLAYING)
         {
-            audioManager.SetVolumeMusic(0.1f, true);
+            if(audioManager != null)
+                audioManager.SetVolumeMusic(0.1f, true);
             isPaused = playerIdx;
             state = GameState.PAUSED;
 
@@ -201,7 +206,8 @@ public class GameManager : MonoBehaviour
             other.gameObject.GetComponentInChildren<SpriteRenderer>().sortingOrder = -50;
             other.gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
             player.State = PlayerState.KO;
-            audioManager.PlaySound(MotherFuckingAudioManager.SoundList.PLAYER_FALL);
+            if(audioManager != null)
+                audioManager.PlaySound(MotherFuckingAudioManager.SoundList.PLAYER_FALL);
             if (player.pusher == -1)
             {
                 ScoreManager.eliminations[player.Index - 1]--;
@@ -217,6 +223,11 @@ public class GameManager : MonoBehaviour
             // state = GameState.END;
             RemovePlayer(player);
         }
+    }
+
+    public void ShowPlayerEjectionWallWay()
+    {
+
     }
 
     public static void Quit()

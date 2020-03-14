@@ -17,7 +17,8 @@ public class Winners : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
+        if(audioManager != null)
+            audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
         /*
         int counter = 0;
         for (int i = 0; i < 4; i++)
@@ -48,7 +49,8 @@ public class Winners : MonoBehaviour
 
     IEnumerator BackHome()
     {
-        audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.MENU, true);
+        if (audioManager != null)
+            audioManager.PlayMusic(MotherFuckingAudioManager.MusicList.MENU, true);
         yield return BlackPanel.ShowAnim();
         SceneManager.LoadScene("SceneTitle");
     }

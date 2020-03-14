@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: 0
-  moveSpeed: 25
+  moveSpeed: 35
   attackAnim: {fileID: 5133071675062285817, guid: 23ca2b9d61666264c9df803277ab43b0,
     type: 3}
   Trace: {fileID: 8456305975947988226, guid: ddeceb0d9c24a574689795b9e7d95e48, type: 3}

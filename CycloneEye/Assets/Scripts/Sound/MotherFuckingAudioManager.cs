@@ -115,6 +115,11 @@ public class MotherFuckingAudioManager : MonoBehaviour
         }
 
         musicEmitters = GetComponents<AudioSource>();
+        
+    }
+
+    private void Start()
+    {
         PlayMusic(MusicList.MENU);
     }
 
@@ -253,14 +258,17 @@ public class MotherFuckingAudioManager : MonoBehaviour
                 switch (music)
                 {
                     case MusicList.MAIN:
+                        emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.music;
                         emitterAvailable.clip = mainMusic;
                         emitterAvailable.Play();
                         break;
                     case MusicList.MENU:
+                        emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.music;
                         emitterAvailable.clip = menuMusic;
                         emitterAvailable.Play();
                         break;
                     case MusicList.SCORE:
+                        emitterAvailable.outputAudioMixerGroup = AudioConfig.Instance.music;
                         emitterAvailable.volume = 0.4f;
                         emitterAvailable.clip = ScoreMusic;
                         emitterAvailable.Play();

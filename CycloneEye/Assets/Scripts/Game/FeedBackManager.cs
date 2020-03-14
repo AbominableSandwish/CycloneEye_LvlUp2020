@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class FeedBackManager : MonoBehaviour {
-
-
     class GizmoEjection
     {
         private Vector3 playerPositon;
@@ -30,32 +28,27 @@ public class FeedBackManager : MonoBehaviour {
         }
     }
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    private Vector3 endPosition;
+    private Vector3 playerPositon;
 
     public void ShowPlayerEjectionWay(Vector3 playerPositon, RaycastHit hit, Vector3 direction, float force, float stopDist)
     {
+        this.playerPositon = playerPositon;
+        this.endPosition = hit.point + direction * force / 20.0f;
+    }
 
-        //this.playerPositon = playerPositon;
-        //this.endPosition = hit.point + direction * force / 20.0f;
+    public void ShowPlayerEjectionWallWay(Vector3 endPosition)
+    {
+        this.endPosition = endPosition - playerPositon;
     }
 
     void OnDrawGizmos()
     {
-        //if (this.playerPositon != null)
-        //{
-        //    Gizmos.DrawSphere(this.playerPositon, 0.2f);
-        //    Gizmos.DrawSphere(this.endPosition, 0.2f);
-        //}
+        if (this.playerPositon != null)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawSphere(this.playerPositon, 0.2f);
+            Gizmos.DrawSphere(this.playerPositon+ this.endPosition, 0.2f);
+        }
     }
 }

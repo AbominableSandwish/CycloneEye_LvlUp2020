@@ -13,13 +13,15 @@ public class PlayerScore : MonoBehaviour
 
     private void Start()
     {
-        audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
+        if(audioManager != null)
+            audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
         StartCoroutine(ShowAnim());
     }
 
     IEnumerator ShowAnim()
     {
-        audioManager.SetVolumeMusic(0.3f, true);
+        if (audioManager != null)
+            audioManager.SetVolumeMusic(0.3f, true);
         yield return new WaitForSeconds(1f);
         for (int i = 0; i < panels.Count; i++)
         {
@@ -48,10 +50,12 @@ public class PlayerScore : MonoBehaviour
             goldHammer.transform.position = hit.point;
         if (ScoreManager.IsWinner(index))
         {
-            audioManager.PlayAlert(MotherFuckingAudioManager.AlertList.GOLD_HAMMER);
+            if (audioManager != null)
+                audioManager.PlayAlert(MotherFuckingAudioManager.AlertList.GOLD_HAMMER);
             goldHammer.SetActive(true);
         }
         yield return new WaitForSeconds(2.0f);
-        audioManager.SetVolumeMusic(0.4f, true);
+        if (audioManager != null)
+            audioManager.SetVolumeMusic(0.4f, true);
     }
 }

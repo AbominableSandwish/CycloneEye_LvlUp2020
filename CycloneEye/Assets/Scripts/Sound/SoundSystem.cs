@@ -8,7 +8,8 @@ public class SoundSystem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
+        if(GameObject.Find("AudioManager") != null)
+            audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
     }
 
     public void Woosh()

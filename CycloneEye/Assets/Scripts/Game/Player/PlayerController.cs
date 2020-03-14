@@ -53,7 +53,8 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
+        if(GameObject.Find("AudioManager") != null)
+            audioManager = GameObject.Find("AudioManager").GetComponent<MotherFuckingAudioManager>();
         charging = false;
         state = PlayerState.NORMAL;
         anim = GetComponentInChildren<Animator>();
@@ -172,27 +173,27 @@ public class PlayerController : MonoBehaviour
         {
             EndPoint = hit.point - direction * stopDist;
             if (GameObject.Find("Game Manager").GetComponent<FeedBackManager>() != null)
-                GameObject.Find("Game Manager").GetComponent<FeedBackManager>().ShowPlayerEjectionWay(StartPosition, hit, direction, force, stopDist);
+                GameObject.Find("Game Manager").GetComponent<FeedBackManager>().ShowPlayerEjectionWay(StartPosition, hit, direction*20, force, stopDist);
         }
         else
         {
             EndPoint = transform.position + direction * force;
             if (GameObject.Find("Game Manager").GetComponent<FeedBackManager>() != null)
-                GameObject.Find("Game Manager").GetComponent<FeedBackManager>().ShowPlayerEjectionWay(StartPosition, hit, direction, force, stopDist);
+                GameObject.Find("Game Manager").GetComponent<FeedBackManager>().ShowPlayerEjectionWay(StartPosition, hit, direction *20, force, stopDist);
         }
 
-    
-
         Vector3 startPos = transform.position;
-        for(float t = 0; t <= 0.1f; t += Time.deltaTime)
+        for (float t = 0; t <= 0.1f; t += Time.deltaTime)
         {
             if (Physics.Raycast(transform.position, direction, out hit, force))
             {
                 EndPoint = hit.point - direction * stopDist;
+                if (GameObject.Find("Game Manager").GetComponent<FeedBackManager>() != null)
+                    GameObject.Find("Game Manager").GetComponent<FeedBackManager>().ShowPlayerEjectionWallWay(EndPoint);
             }
 
             transform.position = Vector3.Lerp(startPos, EndPoint, t * 10);
-           
+
             yield return null;
         }
         transform.position = EndPoint;
@@ -209,17 +210,21 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator AttackAnim()
     {
-
         state = PlayerState.ATTACKING;
+        Instantiate(attackAnim, transform.position + transform.forward * 0.2f + transform.right * 0.1f, transform.rotation);
+
         if (chargingAttack < 0.12f)
         {
             yield return new WaitForSeconds(.12f - chargingAttack);
         }
+
         StartCoroutine(ChargeAnim(transform.forward,dashForce * chargingAttack, 0.3f));
         Instantiate(attackAnim, transform.position + transform.forward * 0.2f + transform.right * 0.1f, transform.rotation);
         yield return new WaitForSeconds(.1f);
+
         rBody.velocity = Vector3.zero;
         TestAttackPropultion();
+
         yield return new WaitForSeconds(.7f);
         state = PlayerState.NORMAL;
     }
@@ -244,22 +249,24 @@ public class PlayerController : MonoBehaviour
         charging = false;
         anim.SetBool("charging", false);
         anim.SetBool("attack_blocked", blocked);
-
-        if (blocked)
+        if (audioManager != null)
         {
-            audioManager.PlaySound(MotherFuckingAudioManager.SoundList.PARADE);
-            StartCoroutine(CounterMalusEmplification());
-            StartCoroutine(ChargeAnim(-direction, 1f, 0f));
-        }
-        else
-        {
-            if (!hitplayer)
+            if (blocked)
             {
-                audioManager.PlaySound(MotherFuckingAudioManager.SoundList.WOOSH);
+                audioManager.PlaySound(MotherFuckingAudioManager.SoundList.PARADE);
+                StartCoroutine(CounterMalusEmplification());
+                StartCoroutine(ChargeAnim(-direction, 1f, 0f));
             }
             else
             {
-                audioManager.PlaySound(MotherFuckingAudioManager.SoundList.HIT);
+                if (!hitplayer)
+                {
+                    audioManager.PlaySound(MotherFuckingAudioManager.SoundList.WOOSH);
+                }
+                else
+                {
+                    audioManager.PlaySound(MotherFuckingAudioManager.SoundList.HIT);
+                }
             }
         }
     }
@@ -269,7 +276,6 @@ public class PlayerController : MonoBehaviour
         modifier = 5f;
         yield return new WaitForSeconds(0.2f);
         modifier = 1f;
-
     }
 
     public int pusher = -1;
@@ -442,7 +448,4 @@ public class PlayerController : MonoBehaviour
         else
         scoreAnimator.SetTrigger("score_down");
     }
-
-
-
 }
