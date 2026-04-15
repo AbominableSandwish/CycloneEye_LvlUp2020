@@ -2,13 +2,13 @@
 
 ## 🧠 Présentation
 
-Un jeu de survie dynamique dans lequel vous incarnez un astronaute tentant de réparer son vaisseau spatial, endommagé après avoir traversé les dangers de l’espace.
+« Get Out » est un jeu de combat en 2D de type plateforme, jouable jusqu’à 4 joueurs.
 
-Le joueur doit identifier rapidement les pannes, intervenir efficacement et gérer une pression croissante à mesure que de nouveaux problèmes apparaissent.
+Le concept est simple mais compétitif : éjecter ses adversaires hors de l’arène tout en restant en jeu le plus longtemps possible.
 
-L’objectif est de survivre le plus longtemps possible.
+Le gameplay met l’accent sur la réactivité, le positionnement et les interactions entre joueurs dans des affrontements rapides et dynamiques.
 
-Ce projet a été développé en 48 heures dans le cadre de la Level Up 2020.
+Ce projet a été développé en 48 heures lors de la game jam « Level Up ».
 
 🏆 **Le jeu a remporté le 1er prix de la game jam.**
 
