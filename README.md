@@ -18,19 +18,20 @@ Ce projet a été développé en 48 heures lors de la game jam « Level Up ».
 
 ![Gameplay](Docs/Gameplay.gif)
 
-> Exemple de gameplay : gestion des pannes en temps réel sous pression
+> Exemple de gameplay : affrontement multijoueur et interactions entre joueurs
 
 ---
 
 ## 🎮 Gameplay
 
-Le joueur évolue dans un vaisseau en panne et doit :
+Le joueur incarne un personnage dans une arène et doit :
 
-- réparer différents systèmes critiques  
-- réagir rapidement à l’apparition de nouvelles pannes  
-- maintenir le vaisseau opérationnel le plus longtemps possible  
+- affronter jusqu’à 3 autres joueurs  
+- utiliser les déplacements et les interactions pour prendre l’avantage  
+- éjecter ses adversaires hors de la zone de jeu  
+- éviter de se faire éliminer  
 
-Le gameplay repose sur la gestion du stress, la rapidité d’exécution et la priorisation des actions.
+Le gameplay repose sur la précision des contrôles, le timing et la gestion des interactions entre joueurs.
 
 ---
 
@@ -38,7 +39,6 @@ Le gameplay repose sur la gestion du stress, la rapidité d’exécution et la p
 
 Projet réalisé en équipe dans le cadre de la game jam.
 
-*(ajoute les noms si possible)*
 
 ---
 
@@ -50,13 +50,14 @@ Projet réalisé en équipe dans le cadre de la game jam.
 
 ## 🧠 Mon rôle
 
-*(à compléter — très important)*
+*(TRÈS IMPORTANT — complète ça)*
 
 Exemple :
 
 - Gameplay programming  
-- Implémentation des systèmes de réparation  
-- Contribution à la boucle de gameplay  
+- Implémentation des contrôles joueur  
+- Gestion des collisions et interactions entre joueurs  
+- Contribution au game feel  
 
 ---
 
@@ -79,14 +80,15 @@ https://www.dylanvonarx.ch/posts/get-out-game/
 
 ## 📌 Ce que j’ai appris
 
-- développer un jeu complet en temps limité  
-- travailler efficacement en équipe  
-- concevoir une boucle de gameplay claire rapidement  
-- itérer sous contrainte  
+- développer un gameplay multijoueur rapidement  
+- gérer les interactions entre plusieurs joueurs  
+- travailler le game feel et la réactivité  
+- collaborer efficacement en équipe  
+- itérer sous contrainte de temps  
 
 ---
 
 ## 💬 Note
 
 Ce projet est un prototype réalisé dans un contexte de game jam.  
-Il met en avant la capacité à concevoir et implémenter un gameplay fonctionnel en très peu de temps.
+Il met en avant la capacité à concevoir et implémenter un gameplay multijoueur fonctionnel en très peu de temps.
